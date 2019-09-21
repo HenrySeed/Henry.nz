@@ -1,0 +1,41 @@
+html {
+  margin: 0;
+  background-color: rgb(46, 46, 46);
+  user-select: none;
+}
+
+#title {
+  font-size: 10em;
+  font-family: sans-serif;
+  font-weight: bold;
+  color: #fff;
+  text-align: center;
+  margin-top: 30vh;
+}
+
+#sketchHolder {
+  position: absolute;
+  top: 0px;
+  z-index: -1;
+}
+
+.buttons {
+  width: 200px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 50px;
+  width: 260px;
+}
+
+.button {
+  display: inline-block;
+  text-decoration: none;
+  color: #ffffff;
+  font-family: sans-serif;
+  padding: 16px;
+  border: #fff solid 2px;
+  border-radius: 6px;
+  font-size: 1.4em;
+  margin-left: 5px;
+  margin-right: 5px;
+}
