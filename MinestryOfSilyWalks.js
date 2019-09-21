@@ -60,7 +60,7 @@ function draw() {
   xPos += xChange * movement;
   yPos += yChange * movement;
 
-  if (mouseX - xPos + (mouseY - yPos) > 1) {
+  if (abs(mouseX - xPos) + abs(mouseY - yPos) > 1) {
     if (c >= 255) c = 0;
     else c += 0.5;
   }
