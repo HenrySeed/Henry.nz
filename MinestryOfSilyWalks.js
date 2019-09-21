@@ -38,8 +38,8 @@ function draw() {
   ellipse(xPos, yPos, ellipseWidth, ellipseWidth);
 }
 
-function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
-  xPos = width / 2;
-  yPos = height / 2;
-}
+// function windowResized() {
+//   resizeCanvas(windowWidth, windowHeight);
+//   xPos = width / 2;
+//   yPos = height / 2;
+// }
