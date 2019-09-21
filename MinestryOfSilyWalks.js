@@ -7,7 +7,7 @@ const movement = 1;
 const ellipseWidth = 90;
 
 function setup() {
-  var canvas = createCanvas(windowWidth, windowHeight);
+  var canvas = createCanvas(displayWidth, displayHeight);
   canvas.parent("sketchHolder");
   loop();
 
@@ -38,8 +38,8 @@ function draw() {
   ellipse(xPos, yPos, ellipseWidth, ellipseWidth);
 }
 
-// function windowResized() {
-//   resizeCanvas(windowWidth, windowHeight);
-//   xPos = width / 2;
-//   yPos = height / 2;
-// }
+function windowResized() {
+  resizeCanvas(displayWidth, displayHeight);
+  xPos = displayWidth / 2;
+  yPos = displayHeight / 2;
+}
