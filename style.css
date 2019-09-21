@@ -3,6 +3,7 @@ html {
   background-color: rgb(46, 46, 46);
   user-select: none;
   overflow: hidden;
+  position: fixed;
 }
 
 #title {
