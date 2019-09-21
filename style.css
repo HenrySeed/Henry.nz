@@ -45,5 +45,6 @@ html {
 @media only screen and (max-width: 600px) {
   #title {
     font-size: 6em;
+    margin-top: 10vh;
   }
 }
