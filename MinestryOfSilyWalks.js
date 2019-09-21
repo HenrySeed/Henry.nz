@@ -5,9 +5,10 @@ let c = 0;
 
 const movement = 1;
 const ellipseWidth = 90;
+let rainbowRaising = true;
 
 function setup() {
-  var canvas = createCanvas(displayWidth, displayHeight);
+  var canvas = createCanvas(windowWidth, windowHeight);
   canvas.parent("sketchHolder");
   loop();
 
@@ -30,8 +31,13 @@ function draw() {
   yPos += yChange * movement;
 
   if (abs(xChange * movement) + abs(yChange * movement) > 1) {
-    if (c >= 255) c = 0;
-    else c += 0.5;
+    if (rainbowRaising) {
+      if (c >= 255) rainbowRaising = false;
+      else c += 0.5;
+    } else {
+      if (c <= 0) rainbowRaising = true;
+      else c -= 0.5;
+    }
   }
   fill(c, 255, 255);
 
@@ -39,7 +45,7 @@ function draw() {
 }
 
 function windowResized() {
-  resizeCanvas(displayWidth, displayHeight);
-  xPos = displayWidth / 2;
-  yPos = displayHeight / 2;
+  resizeCanvas(windowWidth, windowHeight);
+  xPos = windowWidth / 2;
+  yPos = windowHeight / 2;
 }
