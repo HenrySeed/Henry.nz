@@ -72,7 +72,7 @@ function getRepoReadme() {
 
 function renderRepos() {
     const responseObj = JSON.parse(this.responseText);
-    console.log(responseObj.message);
+    // console.log(responseObj.message);
     const repos = responseObj.map(
         val =>
             `https://api.github.com/repos/HenrySeed/` +

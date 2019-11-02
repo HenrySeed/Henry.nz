@@ -1,5 +1,5 @@
 {
-    "name": "",
+    "name": "Henry.nz",
     "short_name": "",
     "icons": [
         {
@@ -13,7 +13,7 @@
             "type": "image/png"
         }
     ],
-    "theme_color": "#000000",
-    "background_color": "#000000",
+    "theme_color": "#2e2e2e",
+    "background_color": "#2e2e2e",
     "display": "standalone"
 }
