@@ -13,14 +13,17 @@ h3 {
 }
 body {
     font-family: sans-serif;
-    margin: 30px;
+    padding: 30px;
+    box-sizing: border-box;
+    margin: 0;
 }
 img {
-    max-width: 80%;
+    max-width: 700px;
     max-height: 800px;
     margin-left: auto;
     margin-right: auto;
     display: block;
+    width: 100%;
 }
 code {
     padding: 15px;
@@ -69,20 +72,22 @@ a {
     display: none;
 }
 .modalVisible {
-    display: block !important;
     position: absolute;
     background: #222;
     display: block;
-    width: 80%;
-    margin-left: 10%;
+    width: 90%;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
     margin-top: 50px;
     box-sizing: border-box;
     color: #fff;
-    padding: 70px;
+    padding: 5%;
     padding-top: 20px;
     box-shadow: 0px 0px 20px #000;
     top: 0;
     left: 0;
+    right: 0;
     border-radius: 20px;
 }
 #closeModal {
@@ -110,9 +115,36 @@ a {
     border: 2px solid #fff;
     border-radius: 10px;
     float: right;
+    font-size: 12pt;
 }
 .button:hover {
     color: #222;
     background-color: #fff;
     font-weight: 500;
+}
+
+@media only screen and (max-width: 900px) {
+    .projectTile {
+        width: 47%;
+        height: 300px;
+        margin: 1.5%;
+        margin-bottom: 25px;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .projectTile {
+        width: 97%;
+        height: 300px;
+        margin: 1.5%;
+        margin-bottom: 25px;
+    }
+
+    #closeModal {
+        margin-top: 5px;
+    }
+
+    .button {
+        margin-top: 7px;
+    }
 }
