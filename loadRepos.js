@@ -55,6 +55,8 @@ function getRepoReadme() {
         .join(" ");
 
     if (images.length > 0) {
+        document.getElementById("loading").innerHTML = "";
+
         const githubButton = `<a class="button" href="${responseObj.git_url}">GitHub</a>`;
 
         const expander = `<div class="projectTile" onclick="modalShow('${rawName}Modal')" style="background-image: url('${
@@ -89,6 +91,8 @@ function renderRepos() {
 }
 
 function main() {
+    document.getElementById("loading").innerHTML = iconHTML;
+
     var request = new XMLHttpRequest();
     request.onload = renderRepos;
     request.open("get", "https://api.github.com/users/HenrySeed/repos", true);
