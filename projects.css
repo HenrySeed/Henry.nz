@@ -1,9 +1,9 @@
 html {
-    background-color: #333;
+    background-color: #222;
     color: #fff;
 }
 h1 {
-    font-size: 28pt;
+    font-size: 32pt;
 }
 h2 {
     font-size: 25pt;
@@ -24,11 +24,12 @@ img {
     margin-right: auto;
     display: block;
     width: 100%;
+    margin: 10px 0;
 }
 code {
     padding: 15px;
     color: #fff;
-    background: #222;
+    background: #111;
     border-radius: 9px;
     display: inline-block;
 }
@@ -68,7 +69,7 @@ a {
 }
 .projectTile > .title {
     height: 60px;
-    background-color: #444;
+    background-color: #333;
     color: #fff;
     padding: 20px;
     box-sizing: border-box;

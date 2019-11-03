@@ -58,12 +58,14 @@ function getRepoReadme() {
     // make all img tags links opening in another tab
     const imgRegex = /<img ?src="[^"]+" ?(alt="[^"]+")?>/g;
     let index = 0;
-    for (const match of readmeHTML.match(imgRegex)) {
-        readmeHTML = readmeHTML.replace(
-            match,
-            `<a href="${images[index]}" target="_blank">${match}</a>`
-        );
-        index++;
+    if (readmeHTML.match(imgRegex)) {
+        for (const match of readmeHTML.match(imgRegex)) {
+            readmeHTML = readmeHTML.replace(
+                match,
+                `<a href="${images[index]}" target="_blank">${match}</a>`
+            );
+            index++;
+        }
     }
 
     const rawName = responseObj.git_url.split("/")[5];
@@ -82,8 +84,6 @@ function getRepoReadme() {
 
     if (images.length > 0) {
         document.getElementById("loading").innerHTML = "";
-
-        console.log(responseObj);
 
         const gitHubURL = responseObj.html_url
             .split("/")
