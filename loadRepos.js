@@ -1,5 +1,9 @@
 const modals = [];
 
+/**
+ * Shows the given modal by its ID, also scrolls to 0,0 to the top of the open modal
+ * @param {*} id
+ */
 function modalShow(id) {
     document.getElementById(id).classList.remove("modalHidden");
     document.getElementById(id).classList.add("modalVisible");
@@ -7,25 +11,36 @@ function modalShow(id) {
     window.scroll(0, 0);
 }
 
+/**
+ * Hides the given modal by its ID
+ * @param {*} id
+ */
 function modalHide(id) {
     document.getElementById(id).classList.remove("modalVisible");
     document.getElementById(id).classList.add("modalHidden");
     document.getElementById("modalScreen").style.display = "none";
 }
 
+/**
+ * Iterates over and hides all modals
+ */
 function closeAllModals() {
     for (const modal of modals) {
         modalHide(modal);
     }
 }
 
+/**
+ * A callback for the HTTP request for a given GitHub Repo, adds it to the Body via innerHTML
+ * @returns
+ */
 function getRepoReadme() {
     const responseObj = JSON.parse(this.responseText);
     if (!responseObj.content) {
         return;
     }
     const readmeMD = atob(responseObj.content.toString());
-    const readmeHTML = marked(readmeMD);
+    let readmeHTML = marked(readmeMD);
 
     const image_regex = /!\[.+\](.+)/g;
     const images = [];
@@ -38,6 +53,17 @@ function getRepoReadme() {
                     .replace(")", "")
             );
         }
+    }
+
+    // make all img tags links opening in another tab
+    const imgRegex = /<img ?src="[^"]+" ?(alt="[^"]+")?>/g;
+    let index = 0;
+    for (const match of readmeHTML.match(imgRegex)) {
+        readmeHTML = readmeHTML.replace(
+            match,
+            `<a href="${images[index]}" target="_blank">${match}</a>`
+        );
+        index++;
     }
 
     const rawName = responseObj.git_url.split("/")[5];
@@ -57,7 +83,14 @@ function getRepoReadme() {
     if (images.length > 0) {
         document.getElementById("loading").innerHTML = "";
 
-        const githubButton = `<a class="button" href="${responseObj.git_url}">GitHub</a>`;
+        console.log(responseObj);
+
+        const gitHubURL = responseObj.html_url
+            .split("/")
+            .slice(0, 5)
+            .join("/");
+
+        const githubButton = `<a class="button" href="${gitHubURL}" target="_blank">GitHub</a>`;
 
         const expander = `<div class="projectTile" onclick="modalShow('${rawName}Modal')" style="background-image: url('${
             images[0]
@@ -72,6 +105,9 @@ function getRepoReadme() {
     }
 }
 
+/**
+ * Displays all given repos from Github
+ */
 function renderRepos() {
     const responseObj = JSON.parse(this.responseText);
     // console.log(responseObj.message);
