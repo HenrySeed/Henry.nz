@@ -3,13 +3,17 @@ let yPos;
 
 let c;
 
-const movement = 1;
+const movement = 2;
+const snakeLength = 100;
 const ellipseWidth = 90;
 
 let canvasActive = true;
 
 let mousehasntMoved = true;
 let ogMousePos;
+
+// array of [x, y, color]
+let circles = [];
 
 function setup() {
     var canvas = createCanvas(windowWidth, windowHeight);
@@ -29,10 +33,10 @@ function setup() {
     ogMousePos = [mouseX, mouseY];
     // console.log(ogMousePos);
 
-    document.body.addEventListener("mouseleave", function(event) {
+    document.body.addEventListener("mouseleave", function (event) {
         canvasActive = false;
     });
-    document.body.addEventListener("mouseenter", function(event) {
+    document.body.addEventListener("mouseenter", function (event) {
         canvasActive = true;
     });
 
@@ -52,21 +56,32 @@ function draw() {
     if (mousehasntMoved) {
         return;
     }
-    const totChange = sqrt((mouseX - xPos) ** 2 + (mouseY - yPos) ** 2);
 
+    // calculate the new circle position
+    const totChange = sqrt((mouseX - xPos) ** 2 + (mouseY - yPos) ** 2);
     const xChange = (mouseX - xPos) / totChange;
     const yChange = (mouseY - yPos) / totChange;
-
     xPos += xChange * movement;
     yPos += yChange * movement;
 
+    // calculate the new circle color
     if (abs(mouseX - xPos) + abs(mouseY - yPos) > 1) {
         if (c >= 255) c = 0;
         else c += 0.5;
     }
-    fill(c, 255, 255);
 
-    ellipse(xPos, yPos, ellipseWidth, ellipseWidth);
+    circles.push([xPos, yPos, c]);
+
+    // limit the snakle to the snakeLength
+    if (circles.length > snakeLength) {
+        circles = circles.slice(circles.length - snakeLength);
+    }
+
+    clear();
+    for (const circle of circles) {
+        fill(circle[2], 255, 255);
+        ellipse(circle[0], circle[1], ellipseWidth, ellipseWidth);
+    }
 }
 
 function windowResized() {

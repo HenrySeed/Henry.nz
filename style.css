@@ -33,7 +33,7 @@ body {
     margin-left: auto;
     margin-right: auto;
     margin-top: 50px;
-    width: 384px;
+    width: 374px;
 }
 
 .button {
@@ -41,8 +41,8 @@ body {
     text-decoration: none;
     color: #ffffff;
     font-family: sans-serif;
-    padding: 16px;
-    border: #fff solid 2px;
+    padding: 13px;
+    border: #fff solid 1.5px;
     border-radius: 6px;
     font-size: 1.4em;
     margin-left: 5px;
