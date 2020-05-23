@@ -16,6 +16,8 @@ It is pretty simple, It just uses the pythag theorem to calculate the hypotenuse
 
 The drawing and mouse-position is made easier by the P5 library. The canvas was made to cover 100% height and width. On the resize of the window, the canvas is redrawn to match the width and height again.
 
+When the mouse leaves the canvas, it enters its auto-mode. It randomly selects a new target and moves towards it. If it gets too close to an edge, it will stop moving in that direction. It also has an auto-centering algorithm where it will prioritise movements which bring it back to the center. I spent some time balancing the auto-centering with the random moving so it moves around the whole screen but never stays in one corner too long.
+
 ## 2. GitHub API Repo Portfolio
 
 ![RepoScreenshot](https://i.imgur.com/4QOBgpt.png)
