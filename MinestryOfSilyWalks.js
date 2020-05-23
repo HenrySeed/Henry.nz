@@ -5,7 +5,7 @@ const movement = 2;
 let snakeLength = 100;
 const ellipseWidth = 90;
 
-let canvasActive = true;
+let canvasActive = false;
 let mousehasntMoved = true;
 let ogMousePos;
 
@@ -102,7 +102,7 @@ function getColor() {
     // get normalised x, y
     const normalX = xPos / windowWidth;
     const normalY = yPos / windowHeight;
-    return normalY * 90 + normalX * 10;
+    return (normalY * 90 + normalX * 10 + 20) % 100;
 }
 
 function getNewCoords(targetX, targetY, speed) {
