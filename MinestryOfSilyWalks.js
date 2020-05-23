@@ -1,18 +1,21 @@
 let xPos;
 let yPos;
 
-const movement = 2;
+// control panel for snake
+const movement = 1.5;
 let snakeLength = 100;
 const ellipseWidth = 90;
+const randColorOffset = getRandInt(0, 100);
 
+// checks for when to draw
 let canvasActive = false;
 let mousehasntMoved = true;
 let ogMousePos;
 
-const randColorOffset = getRandInt(0, 100);
-
+// auto mode
 let randWalkTimer = 0;
 let randWalkTarget;
+let lastDirection;
 
 // array of [x, y, color]
 let circles = [];
@@ -68,12 +71,52 @@ function getRandomCoord(startX, startY) {
         newDirections = directions;
     }
 
+    // if there are more than 1 direction, stop it going back on itself
+    if (newDirections.length > 1 && lastDirection !== undefined) {
+        const doublBack = [lastDirection[0] * -1, lastDirection[1] * -1];
+        newDirections = newDirections.filter(
+            (val) => JSON.stringify(val) !== JSON.stringify(doublBack)
+        );
+    }
+
     const direction = newDirections[getRandInt(0, newDirections.length)];
+    lastDirection = direction;
 
     const travelX = getRandInt(padding / 2, padding) * direction[0];
     const travelY = getRandInt(padding / 2, padding) * direction[1];
 
     return [startX + travelX, startY + travelY];
+}
+
+function getColor() {
+    // get normalised x, y
+    const normalX = xPos / windowWidth;
+    const normalY = yPos / windowHeight;
+    return (normalY * 90 + normalX * 10 + randColorOffset) % 100;
+}
+
+function getNewCoords(targetX, targetY, speed) {
+    // calculate the new circle position
+    const toChange = sqrt((targetX - xPos) ** 2 + (targetY - yPos) ** 2);
+    const xChange = (targetX - xPos) / toChange;
+    const yChange = (targetY - yPos) / toChange;
+    return [xPos + xChange * movement, yPos + yChange * speed];
+}
+
+function addCircle(x, y) {
+    circles.push([x, y, getColor()]);
+    // limit the snakle to the snakeLength
+    if (circles.length > snakeLength) {
+        circles = circles.slice(circles.length - snakeLength);
+    }
+}
+
+function windowResized() {
+    resizeCanvas(windowWidth, windowHeight);
+    xPos = windowWidth / 2;
+    yPos = windowHeight / 2;
+    circles = [];
+    clear();
 }
 
 function setup() {
@@ -100,78 +143,50 @@ function setup() {
     ellipse(xPos, yPos, ellipseWidth, ellipseWidth);
 }
 
-function getColor() {
-    // get normalised x, y
-    const normalX = xPos / windowWidth;
-    const normalY = yPos / windowHeight;
-    return (normalY * 50 + normalX * 50 + randColorOffset) % 100;
-}
-
-function getNewCoords(targetX, targetY, speed) {
-    // calculate the new circle position
-    const toChange = sqrt((targetX - xPos) ** 2 + (targetY - yPos) ** 2);
-    const xChange = (targetX - xPos) / toChange;
-    const yChange = (targetY - yPos) / toChange;
-    return [xPos + xChange * movement, yPos + yChange * speed];
-}
-
-function addCircle(x, y) {
-    circles.push([x, y, getColor()]);
-    // limit the snakle to the snakeLength
-    if (circles.length > snakeLength) {
-        circles = circles.slice(circles.length - snakeLength);
-    }
-}
-
 function draw() {
     if (!canvasActive) {
+        // Auto mode
         if (
             randWalkTimer > 0 &&
-            xPos !== randWalkTarget[0] &&
-            yPos !== randWalkTarget[1]
+            Math.round(xPos) !== Math.round(randWalkTarget[0]) &&
+            Math.round(yPos) !== Math.round(randWalkTarget[1])
         ) {
             [xPos, yPos] = getNewCoords(
                 randWalkTarget[0],
                 randWalkTarget[1],
-                movement / 5
+                movement / 3
             );
             addCircle(xPos, yPos);
             randWalkTimer -= 1;
         } else {
             // gen a new target
             randWalkTarget = getRandomCoord(xPos, yPos);
-            randWalkTimer = 200;
+            randWalkTimer = 400;
         }
     } else {
-        if (mousehasntMoved) {
-            if (
-                JSON.stringify([mouseX, mouseY]) !== JSON.stringify(ogMousePos)
-            ) {
-                mousehasntMoved = false;
-            }
+        // Manual mode
+        const mousehasMoved =
+            JSON.stringify([Math.round(mouseX), Math.round(mouseY)]) !==
+            JSON.stringify([
+                Math.round(ogMousePos[0]),
+                Math.round(ogMousePos[1]),
+            ]);
+        if (mousehasMoved) {
+            snakeLength = 100;
+            [xPos, yPos] = getNewCoords(mouseX, mouseY, movement);
+            addCircle(xPos, yPos);
         }
-        if (mousehasntMoved) {
-            return;
-        }
-    }
-
-    if (!mousehasntMoved && canvasActive) {
-        snakeLength = 100;
-        [xPos, yPos] = getNewCoords(mouseX, mouseY, movement);
-        addCircle(xPos, yPos);
     }
 
     clear();
-    for (const circle of circles) {
+    for (const [index, circle] of circles.entries()) {
+        const width = (circles.length - index) / 2.5;
         fill(circle[2], 100, 100);
-        ellipse(circle[0], circle[1], ellipseWidth, ellipseWidth);
+        ellipse(
+            circle[0],
+            circle[1],
+            ellipseWidth - width,
+            ellipseWidth - width
+        );
     }
-}
-
-function windowResized() {
-    resizeCanvas(windowWidth, windowHeight);
-    xPos = windowWidth / 2;
-    yPos = windowHeight / 2;
-    circles = [];
-    clear();
 }
