@@ -12,7 +12,7 @@ let ogMousePos;
 let randWalkTimer = 0;
 let randWalkTarget;
 
-// array of [x, y]
+// array of [x, y, color]
 let circles = [];
 
 function getRandInt(min, max) {
@@ -34,9 +34,7 @@ function getRandomCoord(startX, startY) {
     if (startX > padding && startY > padding) directions.push([-1, -1]);
 
     // randomly remove directions we dont want, ie: if we are south, dont keep going south as often
-
     let newDirections = [];
-
     if (directions.length > 2) {
         const areNorth = startY < windowHeight / 2;
         const areSouth = startY > windowHeight / 2;
@@ -45,31 +43,24 @@ function getRandomCoord(startX, startY) {
 
         let skipped = 0;
         for (const possD of shuffle(directions)) {
+            let skipThis = false;
             if (areNorth && possD[1] === -1 && getRandInt(0, 3) === 0) {
-                if (skipped < 2) {
-                    skipped++;
-                    continue;
-                }
+                skipThis = true;
             }
             if (areSouth && possD[1] === 1 && getRandInt(0, 3) === 0) {
-                if (skipped < 2) {
-                    skipped++;
-                    continue;
-                }
+                skipThis = true;
             }
             if (areEast && possD[0] === 1 && getRandInt(0, 3) === 0) {
-                if (skipped < 2) {
-                    skipped++;
-                    continue;
-                }
+                skipThis = true;
             }
             if (areWest && possD[0] === -1 && getRandInt(0, 3) === 0) {
-                if (skipped < 2) {
-                    skipped++;
-                    continue;
-                }
+                skipThis = true;
             }
-            newDirections.push(possD);
+            if (!skipThis || skipped >= 2) {
+                newDirections.push(possD);
+            } else {
+                skipped++;
+            }
         }
     } else {
         newDirections = directions;
@@ -79,13 +70,6 @@ function getRandomCoord(startX, startY) {
 
     const travelX = getRandInt(padding / 2, padding) * direction[0];
     const travelY = getRandInt(padding / 2, padding) * direction[1];
-    console.log(
-        `Moving in direction [${direction[0]}, ${
-            direction[1]
-        }], \nchange: [${travelX}, ${travelY}]\noldPos: [${startX}, ${startY}]\nnewPos: [${
-            startX + travelX
-        }, ${startY + travelY}]\nDirections: ${JSON.stringify(newDirections)}`
-    );
 
     return [startX + travelX, startY + travelY];
 }
@@ -153,7 +137,6 @@ function draw() {
             addCircle(xPos, yPos);
             randWalkTimer -= 1;
         } else {
-            console.log("generating new target...");
             // gen a new target
             randWalkTarget = getRandomCoord(xPos, yPos);
             randWalkTimer = 200;
