@@ -9,6 +9,8 @@ let canvasActive = false;
 let mousehasntMoved = true;
 let ogMousePos;
 
+const randColorOffset = getRandInt(0, 100);
+
 let randWalkTimer = 0;
 let randWalkTarget;
 
@@ -102,7 +104,7 @@ function getColor() {
     // get normalised x, y
     const normalX = xPos / windowWidth;
     const normalY = yPos / windowHeight;
-    return (normalY * 90 + normalX * 10 + 20) % 100;
+    return (normalY * 90 + normalX * 10 + randColorOffset) % 100;
 }
 
 function getNewCoords(targetX, targetY, speed) {
