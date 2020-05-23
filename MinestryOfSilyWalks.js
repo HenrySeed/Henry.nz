@@ -104,7 +104,7 @@ function getColor() {
     // get normalised x, y
     const normalX = xPos / windowWidth;
     const normalY = yPos / windowHeight;
-    return (normalY * 90 + normalX * 10 + randColorOffset) % 100;
+    return (normalY * 50 + normalX * 50 + randColorOffset) % 100;
 }
 
 function getNewCoords(targetX, targetY, speed) {
