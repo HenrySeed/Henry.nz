@@ -135,7 +135,6 @@ function draw() {
                 randWalkTarget[1],
                 movement / 5
             );
-            snakeLength = 300;
             addCircle(xPos, yPos);
             randWalkTimer -= 1;
         } else {
