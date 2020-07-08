@@ -132,22 +132,22 @@ const iconHTML = `<div class="lds-css ng-scope"><div style="width:100%;height:10
   .lds-ellipsis div:nth-child(1) div {
     -webkit-animation: lds-ellipsis2 1.5s cubic-bezier(0, 0.5, 0.5, 1) infinite forwards;
     animation: lds-ellipsis2 1.5s cubic-bezier(0, 0.5, 0.5, 1) infinite forwards;
-    background: #6ea1f2;
+    background: #1f75ff;
   }
   .lds-ellipsis div:nth-child(2) div {
     -webkit-animation-delay: -0.75s;
     animation-delay: -0.75s;
-    background: #56ee67;
+    background: #19ff34;
   }
   .lds-ellipsis div:nth-child(3) div {
     -webkit-animation-delay: -0.375s;
     animation-delay: -0.375s;
-    background: #f0d837;
+    background: #ffdf05;
   }
   .lds-ellipsis div:nth-child(4) div {
     -webkit-animation-delay: 0s;
     animation-delay: 0s;
-    background: #e90c59;
+    background: #ff002f;
   }
   .lds-ellipsis div:nth-child(5) div {
     -webkit-animation: lds-ellipsis3 1.5s cubic-bezier(0, 0.5, 0.5, 1) infinite forwards;
