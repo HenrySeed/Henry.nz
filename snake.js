@@ -1,3 +1,18 @@
+console.log(
+    "\n\
+_    _                          _____               _ \n\
+| |  | |                        / ____|             | |\n\
+| |__| | ___ _ __  _ __ _   _  | (___   ___  ___  __| |\n\
+|  __  |/ _ \\ '_ \\| '__| | | |  \\___ \\ / _ \\/ _ \\/ _` |\n\
+| |  | |  __/ | | | |  | |_| |  ____) |  __/  __/ (_| |\n\
+|_|  |_|\\___|_| |_|_|   \\__, | |_____/ \\___|\\___|\\__,_|\n\
+              __/ |                         \n\
+             |___/                          \n\
+Site: http://henry.nz\n\
+Github: http://github.com/HenrySeed\n\
+LinkedIn: http://www.linkedin.com/in/seed"
+);
+
 let xPos;
 let yPos;
 
@@ -75,7 +90,7 @@ function getRandomCoord(startX, startY) {
     if (newDirections.length > 1 && lastDirection !== undefined) {
         const doublBack = [lastDirection[0] * -1, lastDirection[1] * -1];
         newDirections = newDirections.filter(
-            (val) => JSON.stringify(val) !== JSON.stringify(doublBack)
+            val => JSON.stringify(val) !== JSON.stringify(doublBack)
         );
     }
 
@@ -132,10 +147,10 @@ function setup() {
     yPos = height / 2;
     ogMousePos = [mouseX, mouseY];
 
-    document.body.addEventListener("mouseleave", function (event) {
+    document.body.addEventListener("mouseleave", function(event) {
         canvasActive = false;
     });
-    document.body.addEventListener("mouseenter", function (event) {
+    document.body.addEventListener("mouseenter", function(event) {
         canvasActive = true;
     });
 
@@ -169,7 +184,7 @@ function draw() {
             JSON.stringify([Math.round(mouseX), Math.round(mouseY)]) !==
             JSON.stringify([
                 Math.round(ogMousePos[0]),
-                Math.round(ogMousePos[1]),
+                Math.round(ogMousePos[1])
             ]);
         if (mousehasMoved) {
             snakeLength = 100;

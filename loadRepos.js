@@ -1,3 +1,13 @@
+let timeoutCall;
+function printTimeout() {
+    const githubButton = `<a class="button viewOnGithub" href="https://github.com/HenrySeed?tab=repositories" target="_blank">View on GitHub</a>`;
+    document.getElementById("loading").innerHTML =
+        "<p>GitHub seems to be taking a while to load my projects. You can just see them here instead: </p>" +
+        githubButton;
+
+    document.getElementById("loading").style.width = "300px";
+}
+
 const modals = [];
 
 /**
@@ -84,6 +94,9 @@ function getRepoReadme() {
 
     if (images.length > 0) {
         document.getElementById("loading").innerHTML = "";
+        if (timeoutCall) {
+            clearInterval(timeoutCall);
+        }
 
         const gitHubURL = responseObj.html_url
             .split("/")
@@ -110,24 +123,27 @@ function getRepoReadme() {
  */
 function renderRepos() {
     const responseObj = JSON.parse(this.responseText);
-    // console.log(responseObj.message);
-    const repos = responseObj.map(
-        val =>
-            `https://api.github.com/repos/HenrySeed/` +
-            val.name +
-            "/contents/README.md"
-    );
+    if (responseObj) {
+        const repos = responseObj.map(
+            val =>
+                `https://api.github.com/repos/HenrySeed/` +
+                val.name +
+                "/contents/README.md"
+        );
 
-    for (const repo of repos) {
-        var request = new XMLHttpRequest();
-        request.onload = getRepoReadme;
-        request.open("get", repo, true);
-        request.send();
+        for (const repo of repos) {
+            var request = new XMLHttpRequest();
+            request.onload = getRepoReadme;
+            request.open("get", repo, true);
+            request.send();
+        }
     }
 }
 
 function main() {
     document.getElementById("loading").innerHTML = iconHTML;
+
+    timeoutCall = window.setTimeout(printTimeout, 1000);
 
     var request = new XMLHttpRequest();
     request.onload = renderRepos;

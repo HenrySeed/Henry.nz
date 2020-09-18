@@ -1,5 +1,5 @@
 html {
-    background-color: #222;
+    background-color: #000000;
     color: #fff;
 }
 h1 {
@@ -59,33 +59,33 @@ a {
     margin-right: auto;
 }
 .projectTile {
-    width: 30%;
+    width: 45%;
     height: 300px;
-    margin: 1.5%;
+    margin: 2.5%;
     margin-bottom: 35px;
     display: inline-block;
-    box-shadow: 2px 2px 5px #222;
-    border-radius: 5px;
     background-size: cover;
     background-position: top;
     cursor: pointer;
+    border: 1px solid #ffffff;
+    box-sizing: border-box;
 }
 .projectTile > .title {
     height: 60px;
-    background-color: #333;
+    background-color: #000000;
     color: #fff;
     padding: 20px;
     box-sizing: border-box;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
-    margin-top: 240px;
+    margin-top: 236px;
 }
 .modalHidden {
     display: none;
 }
 .modalVisible {
     position: absolute;
-    background: #222;
+    background: #000000;
     display: block;
     width: 90%;
     max-width: 900px;
@@ -96,11 +96,10 @@ a {
     color: #fff;
     padding: 5%;
     padding-top: 20px;
-    box-shadow: 0px 0px 20px #000;
     top: 0;
     left: 0;
     right: 0;
-    border-radius: 10px;
+    border: 1px solid white;
 }
 #closeModal {
     float: right;
@@ -121,6 +120,7 @@ a {
 .button {
     padding: 10px 20px;
     color: #ffffff;
+    background-color: #000000;
     margin-top: 16px;
     margin-right: 20px;
     text-decoration: none;
@@ -129,11 +129,22 @@ a {
     float: right;
     font-size: 12pt;
     margin-bottom: 20px;
+    outline: none;
+    cursor: pointer;
 }
 .button:hover {
     color: #222;
     background-color: #fff;
     font-weight: 500;
+}
+
+.viewOnGithub {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    float: none;
+    width: 114px;
+}
 }
 
 .footer {
