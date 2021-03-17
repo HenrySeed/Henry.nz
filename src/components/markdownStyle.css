@@ -1,5 +1,5 @@
 code {
-    background-color: #191919 !important;
+    background-color: #111 !important;
     display: inline-block;
     padding: 5px 10px;
     border-radius: 5px;
@@ -12,8 +12,8 @@ pre code {
 }
 
 pre {
-    border-radius: 5px;
-    background-color: #191919 !important;
+    border-radius: 8px;
+    background-color: #111 !important;
 }
 
 table {
