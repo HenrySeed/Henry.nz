@@ -4,6 +4,8 @@ import { Project } from "../components/Portfolio";
 import Logo from "../components/Logo";
 import "./ProjectView.css";
 import MarkdownRender from "../components/MarkdownRender";
+import githubLogo from "../res/GitHub-Mark-Light-64px.png";
+import npmLogo from "../res/npm_logo.png";
 
 function ProjectView({ projects }: { projects: Project[] }) {
     let { slug } = useParams<any>();
@@ -30,9 +32,25 @@ function ProjectView({ projects }: { projects: Project[] }) {
                         target="_blank"
                         rel="noreferrer"
                     >
-                        <img src="/res/GitHub-Mark-Light-64px.png" />
+                        <img src={githubLogo} />
                         View on GitHub
                     </a>
+                    {proj.npmURL !== "" && (
+                        <a
+                            href={proj.npmURL}
+                            className="button"
+                            style={{
+                                fontSize: "12pt",
+                                padding: "10px",
+                            }}
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            <img src={npmLogo} width="32px" height="13.3px" />
+                            View on NPM
+                        </a>
+                    )}
+
                     {proj.demoUrl ? (
                         <a
                             href={proj.demoUrl}

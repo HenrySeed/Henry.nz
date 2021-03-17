@@ -13,6 +13,8 @@ export interface Project {
     url: string;
     cover: string;
     demoUrl: string;
+    npmURL: string;
+    lastUpdated: string;
 }
 
 function Portfolio({ projects }: { projects: Project[] }) {

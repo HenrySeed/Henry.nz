@@ -10,6 +10,7 @@ admin.initializeApp({
 
 const firestore = admin.firestore().collection("projects");
 const demoURLMap = new Map();
+const lastUpdatedMap = new Map();
 
 /**
  * A callback for the HTTP request for a given GitHub Repo, adds it to the Body via innerHTML
@@ -51,6 +52,7 @@ function getRepoReadme(demoURL) {
         markdown: readmeMD,
         cover: images[0] || "",
         demoUrl: demoURLMap.get(rawName) || "",
+        lastUpdated: lastUpdatedMap.get(rawName) || "2010-11-12T11:37:07Z", // default to a date before any other projects
     };
     console.log(demoURLMap, rawName);
     console.log(readMeObj);
@@ -73,8 +75,8 @@ function renderRepos() {
     const responseObj = JSON.parse(this.responseText);
     if (responseObj) {
         for (const repo of responseObj) {
+            lastUpdatedMap.set(repo.name, repo.updated_at);
             const readmeURL = `https://api.github.com/repos/HenrySeed/${repo.name}/contents/README.md`;
-
             demoURLMap.set(repo.name, repo.homepage);
             var request = new XMLHttpRequest();
             request.onload = getRepoReadme;

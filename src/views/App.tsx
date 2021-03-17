@@ -6,21 +6,16 @@ import { Project } from "../components/Portfolio";
 import React, { useEffect, useState } from "react";
 import { firebase } from "../components/firebase";
 
-function shuffle(array: any[]) {
-    var currentIndex = array.length,
-        temporaryValue,
-        randomIndex;
-    while (0 !== currentIndex) {
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
-
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
-    }
-
-    return array;
-}
+const npmProjects = [
+    {
+        id: "ASCII-WorldMap-NPM",
+        url: "https://www.npmjs.com/package/ascii-worldmap",
+    },
+    {
+        id: "react-screenshot-frame",
+        url: "https://www.npmjs.com/package/react-window-frame",
+    },
+];
 
 function App() {
     const [projects, setProjects] = useState<Project[]>([]);
@@ -34,34 +29,45 @@ function App() {
                 if (snap) {
                     const projs: Project[] = [];
                     snap.forEach((doc) => {
-                        projs.push(doc.data() as Project);
+                        const proj = doc.data() as Project;
+                        proj.npmURL =
+                            npmProjects.find((val) => val.id === proj.id)
+                                ?.url || "";
+                        projs.push(proj);
                     });
                     const blackList = ["HenrySeed", "Henry.nz"];
                     const filteredProj = projs.filter(
                         (proj) =>
                             proj.cover !== "" && !blackList.includes(proj.id)
                     );
-                    shuffle(filteredProj);
+
+                    // sort projects by last updated
+                    filteredProj.sort((a, b) =>
+                        b.lastUpdated < a.lastUpdated
+                            ? -1
+                            : b.lastUpdated > a.lastUpdated
+                            ? 1
+                            : 0
+                    );
+
                     setProjects(filteredProj);
                 }
             });
     }, []);
 
     useEffect(() => {
-        console.log(
-            "\n\
- _    _                          _____               _ \n\
-| |  | |                        / ____|             | |\n\
-| |__| | ___ _ __  _ __ _   _  | (___   ___  ___  __| |\n\
-|  __  |/ _ \\ '_ \\| '__| | | |  \\___ \\ / _ \\/ _ \\/ _` |\n\
-| |  | |  __/ | | | |  | |_| |  ____) |  __/  __/ (_| |\n\
-|_|  |_|\\___|_| |_|_|   \\__, | |_____/ \\___|\\___|\\__,_|\n\
-                         __/ |                         \n\
-                        |___/                          \n\
+        console.log(`
+ _    _                          _____               _ 
+| |  | |                        / ____|             | |
+| |__| | ___ _ __  _ __ _   _  | (___   ___  ___  __| |
+|  __  |/ _ \\ '_ \\| '__| | | |  \\___ \\ / _ \\/ _ \\/ _  |
+| |  | |  __/ | | | |  | |_| |  ____) |  __/  __/ (_| |
+|_|  |_|\\___|_| |_|_|   \\__, | |_____/ \\___|\\___|\\__,_|
+                         __/ |                         
+                        |___/                          
 Site: http://henry.nz\n\
 Github: http://github.com/HenrySeed\n\
-LinkedIn: http://www.linkedin.com/in/seed"
-        );
+LinkedIn: http://www.linkedin.com/in/seed`);
     }, []);
 
     return (
@@ -80,12 +86,13 @@ LinkedIn: http://www.linkedin.com/in/seed"
             </Router>
             <footer>
                 <p>
-                    <div style={{ marginBottom: "10px" }}>
+                    <span style={{ marginBottom: "10px", display: "block" }}>
                         © Henry Seed {new Date().getFullYear()}
-                    </div>
+                    </span>
                     <a
                         href="https://github.com/HenrySeed"
                         target="_blank"
+                        rel="noreferrer"
                         style={{ marginRight: "10px" }}
                     >
                         GitHub
@@ -94,6 +101,7 @@ LinkedIn: http://www.linkedin.com/in/seed"
                     <a
                         href="https://www.linkedin.com/in/seed/"
                         target="_blank"
+                        rel="noreferrer"
                         style={{ marginLeft: "10px" }}
                     >
                         LinkedIn
