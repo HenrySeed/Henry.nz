@@ -1,0 +1,62 @@
+.projCard {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    border: 2px solid rgba(0, 0, 0, 0);
+    transition: 0.1s;
+    border-radius: 12px;
+}
+
+.projFiller {
+    background: #111111;
+    height: 400px;
+    width: 100%;
+}
+
+.projCard .imageContainer {
+    width: 100%;
+    box-sizing: border-box;
+    background-size: cover;
+    background-position-x: center;
+    background-position-y: top;
+    height: 300px;
+    border-radius: 10px;
+    padding-top: 110px;
+}
+
+.projCard h3 {
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(5px);
+    border-radius: 10px;
+    max-width: 80%;
+}
+
+@media (pointer: fine) {
+    .projCard .imageContainer {
+        padding-top: 0px;
+    }
+
+    .projCard h3 {
+        max-width: none;
+        margin: 0px;
+        font-size: 11pt;
+        box-sizing: border-box;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        padding-top: 140px;
+    }
+    .projCard:hover {
+        border: 2px solid #fff;
+    }
+    .projCard h3 {
+        display: none;
+    }
+    .projCard:hover h3 {
+        display: block;
+    }
+}

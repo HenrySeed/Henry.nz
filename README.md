@@ -1,12 +1,13 @@
 # Henry.nz
 
-This is a 2-part project, 
+This is a 2-part project,
+
 1. The mouse-stalking snake
 2. A GitHub API based portfolio, automatically fetching and displaying all Repos.
 
 ## 1. Mouse-stalking snake
 
-![MouseScreenshot](https://i.imgur.com/Oobdjf3.png)
+![MouseScreenshot](https://i.imgur.com/GbolE9b.png)
 
 Built using the P5.JS library, this just draws a series of circles following the mouse.
 
@@ -20,8 +21,8 @@ When the mouse leaves the canvas, it enters its auto-mode. It randomly selects a
 
 ## 2. GitHub API Repo Portfolio
 
-![RepoScreenshot](https://i.imgur.com/4QOBgpt.png)
+![RepoScreenshot](https://i.imgur.com/WgDsQry.png)
 
 Rather than building a portfolio from scratch, the more efficient method is just to take the README.md of each repo and display it nicely. It uses some nice JS and css to display the README's properly.
 
-The GitHub API has some read limitations, the assumption is, hopefully someone will decide that they like my projects before they reload the page 10 times in 10 minutes.
+The GitHub API has some read limitations, to get around this, I have a Node script which I can run locally, it reads the github api for all my projects, and saves them to a firestore database as a form of intermediary.
