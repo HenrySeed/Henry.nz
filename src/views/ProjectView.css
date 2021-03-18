@@ -60,7 +60,7 @@ ul {
 
 .projButtons {
     float: right;
-    height: 80px;
+    height: fit-content;
 }
 
 .projWrapper img {
@@ -84,6 +84,6 @@ ul {
     }
 
     .projButtons .button {
-        margin-top: 0;
+        margin-top: 5px;
     }
 }

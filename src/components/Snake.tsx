@@ -30,11 +30,17 @@ function getRandInt(min: number, max: number) {
 function Snake() {
     function updateListeners(p5: p5Types) {
         const resizeListener = () => {
-            p5.resizeCanvas(p5.windowWidth, p5.windowHeight);
-            xPos = p5.windowWidth / 2;
-            yPos = p5.windowHeight / 2;
-            circles = [];
-            p5.clear();
+            // only re-render if the width has changed or the height has changed more than 100px
+            if (
+                p5.width !== p5.windowWidth ||
+                Math.abs(p5.height - p5.windowHeight) > 300
+            ) {
+                p5.resizeCanvas(p5.windowWidth, p5.windowHeight);
+                xPos = p5.windowWidth / 2;
+                yPos = p5.windowHeight / 2;
+                circles = [];
+                p5.clear();
+            }
         };
         const mouseMoveListener = () => {
             if (p5.mouseY > p5.windowHeight * 0.8) {
@@ -53,12 +59,14 @@ function Snake() {
         document.body.addEventListener("mouseenter", mouseEnterListener);
         document.addEventListener("mousemove", mouseMoveListener);
         window.addEventListener("resize", resizeListener);
+        window.addEventListener("orientationchange", resizeListener);
 
         return () => {
             window.removeEventListener("mouseleave", mouseLeaveListener);
             window.removeEventListener("mouseenter", mouseEnterListener);
             window.removeEventListener("mousemove", mouseMoveListener);
             window.removeEventListener("resize", resizeListener);
+            window.removeEventListener("orientationchange", resizeListener);
         };
     }
 

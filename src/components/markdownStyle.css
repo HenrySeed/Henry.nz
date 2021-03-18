@@ -1,14 +1,19 @@
+h3 {
+    margin-top: 30px;
+}
+
 code {
     background-color: #111 !important;
     display: inline-block;
     padding: 5px 10px;
     border-radius: 5px;
-    font-size: 12pt !important;
 }
 
 pre code {
     padding: 10px;
     background: none;
+    border-radius: 8px;
+    font-size: 11pt !important;
 }
 
 pre {
@@ -29,4 +34,13 @@ th {
     padding-bottom: 10px;
     text-align: left;
     border-bottom: 1px solid #aaa;
+}
+
+@media screen and (max-device-width: 480px) {
+    body {
+        -webkit-text-size-adjust: none;
+    }
+    pre {
+        width: 90%;
+    }
 }
