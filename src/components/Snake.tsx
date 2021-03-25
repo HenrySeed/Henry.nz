@@ -1,6 +1,5 @@
 import Sketch from "react-p5";
 import p5Types from "p5"; //Import this for typechecking and intellisense
-import { useEffect } from "react";
 
 let xPos: number;
 let yPos: number;
@@ -19,6 +18,8 @@ let ogMousePos: [number, number];
 let randWalkTimer = 0;
 let randWalkTarget: [number, number];
 let lastDirection: [number, number];
+// if the mouse is inactive for more than 10000 cycles, switch to auto mode
+let mouseTimer = 0;
 
 // array of [x, y, color]
 let circles: [number, number, number][] = [];
@@ -33,19 +34,20 @@ function Snake() {
             // only re-render if the width has changed or the height has changed more than 100px
             if (
                 p5.width !== p5.windowWidth ||
-                Math.abs(p5.height - p5.windowHeight) > 300
+                Math.abs(p5.height - p5.height) > 300
             ) {
-                p5.resizeCanvas(p5.windowWidth, p5.windowHeight);
+                p5.resizeCanvas(p5.windowWidth, p5.windowHeight * 0.8);
                 xPos = p5.windowWidth / 2;
-                yPos = p5.windowHeight / 2;
+                yPos = p5.height / 2;
                 circles = [];
                 p5.clear();
             }
         };
         const mouseMoveListener = () => {
-            if (p5.mouseY > p5.windowHeight * 0.8) {
+            if (p5.mouseY > p5.height) {
                 canvasActive = false;
             } else {
+                mouseTimer = 0;
                 canvasActive = true;
             }
         };
@@ -77,25 +79,22 @@ function Snake() {
     ): [number, number] {
         let directions: [number, number][] = [];
         // 10% of the smaller of the two sides height or width
-        const padding = p5.min(p5.windowWidth, p5.windowHeight) / 5;
+        const padding = p5.min(p5.windowWidth, p5.height) / 5;
 
         // only add directions if we are'nt too close to that edge
-        if (
-            startX < p5.windowWidth - padding &&
-            startY < p5.windowHeight - padding
-        )
+        if (startX < p5.windowWidth - padding && startY < p5.height - padding)
             directions.push([1, 1]);
         if (startX < p5.windowWidth - padding && startY > padding)
             directions.push([1, -1]);
-        if (startX > padding && startY < p5.windowHeight - padding)
+        if (startX > padding && startY < p5.height - padding)
             directions.push([-1, 1]);
         if (startX > padding && startY > padding) directions.push([-1, -1]);
 
         // randomly remove directions we dont want, ie: if we are south, dont keep going south as often
         let newDirections: [number, number][] = [];
         if (directions.length > 2) {
-            const areNorth = startY < p5.windowHeight / 2;
-            const areSouth = startY > p5.windowHeight / 2;
+            const areNorth = startY < p5.height / 2;
+            const areSouth = startY > p5.height / 2;
             const areEast = startX > p5.windowWidth / 2;
             const areWest = startX < p5.windowWidth / 2;
 
@@ -144,7 +143,7 @@ function Snake() {
     function getColor(p5: p5Types) {
         // get normalised x, y
         const normalX = xPos / p5.windowWidth;
-        const normalY = yPos / p5.windowHeight;
+        const normalY = yPos / p5.height;
         return (normalY * 90 + normalX * 10 + randColorOffset) % 100;
     }
 
@@ -171,7 +170,7 @@ function Snake() {
 
     const setup = (p5: p5Types, canvasParentRef: Element) => {
         updateListeners(p5);
-        p5.createCanvas(p5.windowWidth, p5.windowHeight).parent(
+        p5.createCanvas(p5.windowWidth, p5.windowHeight * 0.8).parent(
             canvasParentRef
         );
         p5.loop();
@@ -190,6 +189,7 @@ function Snake() {
 
     const draw = (p5: p5Types) => {
         const { mouseX, mouseY } = p5;
+
         if (!canvasActive) {
             // Auto mode
             if (
@@ -222,6 +222,12 @@ function Snake() {
                 snakeLength = 100;
                 [xPos, yPos] = getNewCoords(p5, mouseX, mouseY, movement);
                 addCircle(p5, xPos, yPos);
+            }
+
+            // if mouse doesnt move for 1000 cycles, switch to auto
+            mouseTimer += 1;
+            if (mouseTimer > 150) {
+                canvasActive = false;
             }
         }
 

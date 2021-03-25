@@ -35,6 +35,47 @@
     max-width: 80%;
 }
 
+@media only screen and (max-width: 898px) {
+    #homeContainer {
+        padding-top: 10vh;
+    }
+    .title > span {
+        height: 16vw;
+        width: 40vw;
+        max-width: 350px;
+        margin-bottom: 10px !important;
+        margin-left: 10px !important;
+    }
+}
+
+@media only screen and (max-width: 550px) {
+    .title > span {
+        display: block;
+    }
+    .buttons {
+        margin-top: 30px;
+    }
+}
+
+@media only screen and (max-height: 560px) and (max-width: 600px) {
+    #homeContainer {
+        padding-top: 0px;
+    }
+}
+
+@media only screen and (max-height: 480px) {
+    .title {
+        font-size: 6em;
+    }
+}
+
+@media only screen and (max-width: 400px) {
+    .title > span {
+        width: 70vw;
+        height: 35vw;
+    }
+}
+
 @media (pointer: fine) {
     .projCard .imageContainer {
         padding-top: 0px;

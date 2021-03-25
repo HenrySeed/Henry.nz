@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { Project } from "../components/Portfolio";
+import { Project } from "../views/Home";
 import Logo from "../components/Logo";
 import "./ProjectView.css";
 import MarkdownRender from "../components/MarkdownRender";
