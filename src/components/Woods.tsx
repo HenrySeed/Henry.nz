@@ -235,7 +235,9 @@ function Woods() {
                             position: "absolute",
                             top: "calc(60vh + 40px)",
                             width: "100%",
+                            boxSizing: "border-box",
                             textAlign: "center",
+                            padding: "0px 20px",
                         }}
                     >
                         Wouldn't it be nice if we had a tree here?
