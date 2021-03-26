@@ -1,4 +1,5 @@
 import Snake from "../components/Snake";
+import Woods from "../components/Woods";
 import Logo from "../components/Logo";
 import { Grid } from "@material-ui/core";
 import Button from "../components/Button";
@@ -7,6 +8,7 @@ import { withStyles } from "@material-ui/core/styles";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import "./Home.css";
 import "./App.css";
+import { useState } from "react";
 
 export interface Project {
     id: string;
@@ -21,6 +23,7 @@ export interface Project {
 
 function Home({ projects }: { projects: Project[] }) {
     const fillerProj = { id: "", name: "" };
+    const [demoChoice, setDemoChoice] = useState(Math.floor(Math.random() * 2));
 
     const CustomProgress = withStyles((theme) => ({
         root: {
@@ -37,7 +40,7 @@ function Home({ projects }: { projects: Project[] }) {
     return (
         <div>
             <div id="sketchHolder">
-                <Snake />
+                {demoChoice === 0 ? <Woods /> : <Snake />}
             </div>
             <div id="homeContainer">
                 <Logo className="title" />
