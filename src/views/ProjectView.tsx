@@ -23,6 +23,7 @@ function ProjectView({ projects }: { projects: Project[] }) {
                 (val) => val[0] !== "#" && val[0] !== "!" && val.trim() !== ""
             )
             ?.split(/\?|\.\!/g)[0]
+            .replace(/\[([^\]]+)\]\([^\)]+\)/g, "$1")
             .trim();
         return (
             <DocumentMeta description={descr}>
