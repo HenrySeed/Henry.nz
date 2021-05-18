@@ -1,14 +1,11 @@
 import Snake from "../components/Snake";
-import Woods from "../components/Woods";
 import Logo from "../components/Logo";
 import { Grid } from "@material-ui/core";
 import Button from "../components/Button";
 import { Link } from "react-router-dom";
-import { withStyles } from "@material-ui/core/styles";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import "./Home.css";
 import "./App.css";
-import { useState } from "react";
+import { CustomProgress } from "../components/Loading";
 
 export interface Project {
     id: string;
@@ -22,25 +19,11 @@ export interface Project {
 }
 
 function Home({ projects }: { projects: Project[] }) {
-    const fillerProj = { id: "", name: "" };
-    const [demoChoice, setDemoChoice] = useState(Math.floor(Math.random() * 2));
-
-    const CustomProgress = withStyles((theme) => ({
-        root: {
-            height: 3,
-        },
-        colorPrimary: {
-            backgroundColor: "#111111",
-        },
-        bar: {
-            backgroundColor: "#555555",
-        },
-    }))(LinearProgress);
-
     return (
         <div>
             <div id="sketchHolder">
-                {demoChoice === 0 ? <Woods /> : <Snake />}
+                {/* {demoChoice === 0 ? <Woods /> : <Snake />} */}
+                <Snake />
             </div>
             <div id="homeContainer">
                 <Logo className="title" />
@@ -79,16 +62,7 @@ function Home({ projects }: { projects: Project[] }) {
                                   </Link>
                               </Grid>
                           ))
-                        : [
-                              fillerProj,
-                              fillerProj,
-                              fillerProj,
-                              fillerProj,
-                              fillerProj,
-                              fillerProj,
-                              fillerProj,
-                              fillerProj,
-                          ].map((val, index) => (
+                        : [0, 0, 0, 0, 0, 0, 0, 0].map((_, index) => (
                               <Grid
                                   item
                                   xs={12}

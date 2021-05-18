@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Project } from "../views/Home";
 import Logo from "../components/Logo";
@@ -6,6 +6,7 @@ import "./ProjectView.css";
 import MarkdownRender from "../components/MarkdownRender";
 import githubLogo from "../res/GitHub-Mark-Light-64px.png";
 import npmLogo from "../res/npm_logo.png";
+import DocumentMeta from "react-document-meta";
 
 function ProjectView({ projects }: { projects: Project[] }) {
     let { slug } = useParams<any>();
@@ -16,28 +17,22 @@ function ProjectView({ projects }: { projects: Project[] }) {
     });
 
     if (proj) {
+        const descr = proj.markdown
+            .split("\n")
+            .find(
+                (val) => val[0] !== "#" && val[0] !== "!" && val.trim() !== ""
+            )
+            ?.split(/\?|\.\!/g)[0]
+            .trim();
         return (
-            <div className="projWrapper">
-                <Link to="/">
-                    <Logo className="projectLogo" />
-                </Link>
-                <div className="projButtons">
-                    <a
-                        href={proj.url}
-                        className="button"
-                        style={{
-                            fontSize: "12pt",
-                            padding: "10px",
-                        }}
-                        target="_blank"
-                        rel="noreferrer"
-                    >
-                        <img src={githubLogo} />
-                        View on GitHub
-                    </a>
-                    {proj.npmURL !== "" && (
+            <DocumentMeta description={descr}>
+                <div className="projWrapper">
+                    <Link to="/">
+                        <Logo className="projectLogo" />
+                    </Link>
+                    <div className="projButtons">
                         <a
-                            href={proj.npmURL}
+                            href={proj.url}
                             className="button"
                             style={{
                                 fontSize: "12pt",
@@ -46,32 +41,51 @@ function ProjectView({ projects }: { projects: Project[] }) {
                             target="_blank"
                             rel="noreferrer"
                         >
-                            <img src={npmLogo} width="32px" height="13.3px" />
-                            View on NPM
+                            <img src={githubLogo} />
+                            View on GitHub
                         </a>
-                    )}
+                        {proj.npmURL !== "" && (
+                            <a
+                                href={proj.npmURL}
+                                className="button"
+                                style={{
+                                    fontSize: "12pt",
+                                    padding: "10px",
+                                }}
+                                target="_blank"
+                                rel="noreferrer"
+                            >
+                                <img
+                                    src={npmLogo}
+                                    width="32px"
+                                    height="13.3px"
+                                />
+                                View on NPM
+                            </a>
+                        )}
 
-                    {proj.demoUrl ? (
-                        <a
-                            href={proj.demoUrl}
-                            className="button"
-                            style={{
-                                fontSize: "12pt",
-                                padding: "10px",
-                            }}
-                            target="_blank"
-                            rel="noreferrer"
-                        >
-                            Demo
-                        </a>
-                    ) : (
-                        <></>
-                    )}
+                        {proj.demoUrl ? (
+                            <a
+                                href={proj.demoUrl}
+                                className="button"
+                                style={{
+                                    fontSize: "12pt",
+                                    padding: "10px",
+                                }}
+                                target="_blank"
+                                rel="noreferrer"
+                            >
+                                Demo
+                            </a>
+                        ) : (
+                            <></>
+                        )}
+                    </div>
+                    <div className="projMarkdown">
+                        <MarkdownRender>{proj.markdown}</MarkdownRender>
+                    </div>
                 </div>
-                <div className="projMarkdown">
-                    <MarkdownRender>{proj.markdown}</MarkdownRender>
-                </div>
-            </div>
+            </DocumentMeta>
         );
     } else {
         return <></>;
