@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import "./Home.css";
 import "./App.css";
 import { CustomProgress } from "../components/Loading";
+import MetaTags from "react-meta-tags";
 
 export interface Project {
     id: string;
@@ -21,6 +22,9 @@ export interface Project {
 function Home({ projects }: { projects: Project[] }) {
     return (
         <div>
+            <MetaTags>
+                <title>Henry Seed | Software Developer</title>
+            </MetaTags>
             <div id="sketchHolder">
                 {/* {demoChoice === 0 ? <Woods /> : <Snake />} */}
                 <Snake />

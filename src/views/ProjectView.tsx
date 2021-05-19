@@ -6,7 +6,7 @@ import "./ProjectView.css";
 import MarkdownRender from "../components/MarkdownRender";
 import githubLogo from "../res/GitHub-Mark-Light-64px.png";
 import npmLogo from "../res/npm_logo.png";
-import DocumentMeta from "react-document-meta";
+import MetaTags from "react-meta-tags";
 
 function ProjectView({ projects }: { projects: Project[] }) {
     let { slug } = useParams<any>();
@@ -22,11 +22,17 @@ function ProjectView({ projects }: { projects: Project[] }) {
             .find(
                 (val) => val[0] !== "#" && val[0] !== "!" && val.trim() !== ""
             )
-            ?.split(/\?|\.\!/g)[0]
-            .replace(/\[([^\]]+)\]\([^\)]+\)/g, "$1")
+            ?.split(/\?|\.!/g)[0]
+            .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
             .trim();
+
+        // console.log(proj.markdown);
+
         return (
-            <DocumentMeta description={descr}>
+            <span>
+                <MetaTags>
+                    <title>{`Henry Seed - ${proj.title}`}</title>
+                </MetaTags>
                 <div className="projWrapper">
                     <Link to="/">
                         <Logo className="projectLogo" />
@@ -42,7 +48,7 @@ function ProjectView({ projects }: { projects: Project[] }) {
                             target="_blank"
                             rel="noreferrer"
                         >
-                            <img src={githubLogo} />
+                            <img src={githubLogo} alt="github logo" />
                             View on GitHub
                         </a>
                         {proj.npmURL !== "" && (
@@ -57,6 +63,7 @@ function ProjectView({ projects }: { projects: Project[] }) {
                                 rel="noreferrer"
                             >
                                 <img
+                                    alt="npm logo"
                                     src={npmLogo}
                                     width="32px"
                                     height="13.3px"
@@ -86,7 +93,7 @@ function ProjectView({ projects }: { projects: Project[] }) {
                         <MarkdownRender>{proj.markdown}</MarkdownRender>
                     </div>
                 </div>
-            </DocumentMeta>
+            </span>
         );
     } else {
         return <></>;

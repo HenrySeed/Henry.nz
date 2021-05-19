@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Home from "./Home";
 import ProjectView from "./ProjectView";
 import { Project } from "./Home";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { firebase } from "../components/firebase";
 
 const npmProjects = [

@@ -16,10 +16,8 @@ const meta = {
 };
 
 ReactDOM.render(
-    <DocumentMeta {...meta}>
-        <React.StrictMode>
-            <App />
-        </React.StrictMode>
-    </DocumentMeta>,
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>,
     document.getElementById("root")
 );
