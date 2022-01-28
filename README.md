@@ -7,7 +7,7 @@ This is a 2-part project,
 
 ## 1. Mouse-stalking snake
 
-![MouseScreenshot](https://i.imgur.com/GbolE9b.png)
+![The snake just follows your mouse](https://imgur.com/HlxGUok.jpg)
 
 Built using the P5.JS library, this just draws a series of circles following the mouse.
 
@@ -21,7 +21,7 @@ When the mouse leaves the canvas, it enters its auto-mode. It randomly selects a
 
 ## 2. GitHub API Repo Portfolio
 
-![RepoScreenshot](https://i.imgur.com/WgDsQry.png)
+![Love this little CSS rotate animation](https://i.imgur.com/smgc6mq.gif)
 
 Rather than building a portfolio from scratch, the more efficient method is just to take the README.md of each repo and display it nicely. It uses some nice JS and css to display the README's properly.
 
