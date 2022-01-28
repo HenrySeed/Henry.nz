@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./views/App";
-import DocumentMeta from "react-document-meta";
+import { BrowserRouter } from "react-router-dom";
 
 const meta = {
     title: "Henry Seed | Software Developer",
@@ -17,7 +17,9 @@ const meta = {
 
 ReactDOM.render(
     <React.StrictMode>
-        <App />
+        <BrowserRouter>
+            <App />
+        </BrowserRouter>
     </React.StrictMode>,
     document.getElementById("root")
 );

@@ -6,7 +6,7 @@ let yPos: number;
 
 // control panel for snake
 const movement = 1.5;
-let snakeLength = 100;
+let snakeLength = 50;
 const ellipseWidth = 90;
 const randColorOffset = getRandInt(0, 100);
 
@@ -157,7 +157,7 @@ function Snake() {
         const toChange = p5.sqrt((targetX - xPos) ** 2 + (targetY - yPos) ** 2);
         const xChange = (targetX - xPos) / toChange;
         const yChange = (targetY - yPos) / toChange;
-        return [xPos + xChange * movement, yPos + yChange * speed];
+        return [xPos + xChange * speed * 2, yPos + yChange * speed * 2];
     }
 
     function addCircle(p5: p5Types, x: number, y: number) {
@@ -173,6 +173,7 @@ function Snake() {
         p5.createCanvas(p5.windowWidth, p5.windowHeight * 0.8).parent(
             canvasParentRef
         );
+        p5.frameRate(30);
         p5.loop();
 
         p5.colorMode(p5.HSB, 100);
@@ -201,7 +202,7 @@ function Snake() {
                     p5,
                     randWalkTarget[0],
                     randWalkTarget[1],
-                    movement / 3
+                    movement / 2
                 );
                 addCircle(p5, xPos, yPos);
                 randWalkTimer -= 1;
@@ -219,7 +220,7 @@ function Snake() {
                     Math.round(ogMousePos[1]),
                 ]);
             if (mousehasMoved) {
-                snakeLength = 100;
+                snakeLength = 50;
                 [xPos, yPos] = getNewCoords(p5, mouseX, mouseY, movement);
                 addCircle(p5, xPos, yPos);
             }

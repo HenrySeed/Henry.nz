@@ -1,9 +1,10 @@
 import "./App.css";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import Home from "./Home";
+import { Switch, Route, useLocation } from "react-router-dom";
+import Home, { Article } from "./Home";
 import ProjectView from "./ProjectView";
 import { Project } from "./Home";
-import React, { useEffect, useState } from "react";
+import { AboutMeView } from "./AboutMeView";
+import { useEffect, useState } from "react";
 import { firebase } from "../components/firebase";
 
 const npmProjects = [
@@ -19,6 +20,8 @@ const npmProjects = [
 
 function App() {
     const [projects, setProjects] = useState<Project[]>([]);
+    const [articles, setArticles] = useState<Article[]>([]);
+    const location = useLocation();
 
     useEffect(() => {
         firebase
@@ -33,6 +36,7 @@ function App() {
                         proj.npmURL =
                             npmProjects.find((val) => val.id === proj.id)
                                 ?.url || "";
+                        proj.type = "Project";
                         projs.push(proj);
                     });
                     const blackList = ["HenrySeed", "Henry.nz"];
@@ -54,36 +58,71 @@ function App() {
                 }
             });
     }, []);
+    useEffect(() => {
+        firebase
+            .firestore()
+            .collection("articles")
+            .get()
+            .then((snap) => {
+                if (snap) {
+                    let artics: Article[] = [];
+                    snap.forEach((doc) => {
+                        const article = doc.data() as Article;
+                        article.type = "Article";
+                        artics.push(article);
+                    });
+
+                    artics = artics.filter((val) => val.draft !== true);
+
+                    // sort projects by last updated
+                    artics.sort((a, b) =>
+                        b.date < a.date ? -1 : b.date > a.date ? 1 : 0
+                    );
+
+                    setArticles(artics);
+                }
+            });
+    }, []);
 
     useEffect(() => {
         console.log(`
- _    _                          _____               _ 
-| |  | |                        / ____|             | |
-| |__| | ___ _ __  _ __ _   _  | (___   ___  ___  __| |
-|  __  |/ _ \\ '_ \\| '__| | | |  \\___ \\ / _ \\/ _ \\/ _  |
-| |  | |  __/ | | | |  | |_| |  ____) |  __/  __/ (_| |
-|_|  |_|\\___|_| |_|_|   \\__, | |_____/ \\___|\\___|\\__,_|
-                         __/ |                         
-                        |___/                          
-Site: http://henry.nz\n\
-Github: http://github.com/HenrySeed\n\
-LinkedIn: http://www.linkedin.com/in/seed`);
+
+     _    _                          _____               _ 
+    | |  | |                        / ____|             | |
+    | |__| | ___ _ __  _ __ _   _  | (___   ___  ___  __| |
+    |  __  |/ _ \\ '_ \\| '__| | | |  \\___ \\ / _ \\/ _ \\/ _  |
+    | |  | |  __/ | | | |  | |_| |  ____) |  __/  __/ (_| |
+    |_|  |_|\\___|_| |_|_|   \\__, | |_____/ \\___|\\___|\\__,_|
+                             __/ |                         
+                            |___/     
+
+    Site:     http://henry.nz
+
+    Github:   http://github.com/HenrySeed
+
+    LinkedIn: http://www.linkedin.com/in/seed
+    
+    
+    `);
     }, []);
+
+    useEffect(() => {
+        window.scrollTo({ top: 0 });
+    }, [location]);
 
     return (
         <div className="App">
-            <Router>
-                <div>
-                    <Switch>
-                        <Route path="/portfolio/:slug">
-                            <ProjectView projects={projects} />
-                        </Route>
-                        <Route path="/">
-                            <Home projects={projects} />
-                        </Route>
-                    </Switch>
-                </div>
-            </Router>
+            <Switch>
+                <Route path="/portfolio/:slug">
+                    <ProjectView projects={projects} articles={articles} />
+                </Route>
+                <Route path="/aboutme">
+                    <AboutMeView />
+                </Route>
+                <Route path="/">
+                    <Home articles={articles} projects={projects} />
+                </Route>
+            </Switch>
             <footer>
                 <p>
                     <span style={{ marginBottom: "10px", display: "block" }}>
@@ -93,16 +132,16 @@ LinkedIn: http://www.linkedin.com/in/seed`);
                         href="https://github.com/HenrySeed"
                         target="_blank"
                         rel="noreferrer"
-                        style={{ marginRight: "10px" }}
                     >
                         GitHub
                     </a>
-                    |
+                    {" | "}
+                    <a href="/aboutme">About me</a>
+                    {" | "}
                     <a
                         href="https://www.linkedin.com/in/seed/"
                         target="_blank"
                         rel="noreferrer"
-                        style={{ marginLeft: "10px" }}
                     >
                         LinkedIn
                     </a>

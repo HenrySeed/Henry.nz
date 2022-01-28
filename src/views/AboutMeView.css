@@ -1,0 +1,60 @@
+.container {
+    width: 90%;
+    max-width: 800px;
+    margin: 100px auto;
+    border: white;
+}
+
+.hello_title {
+    font-size: 60pt;
+    margin-bottom: 20px;
+    margin-top: 2%;
+}
+
+.jobContainer {
+    padding: 6%;
+    margin-bottom: 120px;
+    margin-top: 50px;
+}
+
+.jobContainer > .jobDate {
+    margin: 0;
+    font-size: 18pt;
+    width: fit-content;
+    margin-top: calc(-6% - 24px);
+    margin-bottom: 20px;
+    background: black;
+    padding: 0 10px;
+    margin-bottom: 4%;
+}
+
+.jobContainer > .jobTitle {
+    margin: 8px 0;
+    font-size: 20pt;
+}
+
+.jobContainer > .jobLocation {
+    opacity: 0.5;
+    margin: 0;
+    font-size: 14pt;
+}
+
+table {
+    margin-top: 10px;
+}
+
+tr {
+    line-height: 1.8;
+}
+
+td:first-child {
+    padding-right: 1vw;
+    opacity: 1;
+    font-weight: 800;
+}
+
+td {
+    padding-top: 5px;
+    opacity: 0.8;
+    vertical-align: top;
+}

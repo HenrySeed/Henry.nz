@@ -44,11 +44,8 @@ ul {
 .projWrapper {
     padding: 7vh 5vw;
     overflow-x: scroll;
-}
-
-.projWrapper {
     width: 90%;
-    max-width: 900px;
+    max-width: 1000px;
     margin-right: auto;
     margin-left: auto;
 }
@@ -70,12 +67,22 @@ ul {
     max-height: 100vh;
 }
 
-.projWrapper a {
-    font-weight: bold;
+.projScroller {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 90%;
 }
-.projWrapper a:hover {
-    background: #fff;
-    color: #000;
+
+.projScroller > .projectTiles {
+    overflow-y: hidden;
+    white-space: nowrap;
+}
+.projScroller > .projectTiles > .tile {
+    display: inline-block;
+    vertical-align: top;
+    width: 28%;
+    min-width: 300px;
 }
 
 @media only screen and (max-width: 700px) {

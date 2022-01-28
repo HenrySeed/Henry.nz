@@ -54,14 +54,10 @@ function getRepoReadme(demoURL) {
         demoUrl: demoURLMap.get(rawName) || "",
         lastUpdated: lastUpdatedMap.get(rawName) || "2010-11-12T11:37:07Z", // default to a date before any other projects
     };
-    console.log(demoURLMap, rawName);
-    console.log(readMeObj);
+
     firestore
         .doc(readMeObj.id)
         .set(readMeObj)
-        .then(function () {
-            console.log("Document successfully written!");
-        })
         .catch(function (error) {
             console.error("Error writing document: ", error);
         });
@@ -71,9 +67,16 @@ function getRepoReadme(demoURL) {
  * Displays all given repos from Github
  */
 function renderRepos() {
-    console.log("downloading repos");
     const responseObj = JSON.parse(this.responseText);
-    if (responseObj) {
+
+    if (responseObj?.message?.startsWith("API rate limit exceeded")) {
+        console.log(
+            `    Rate Limit reached for GitHub API, try again later. \n\nExiting...`
+        );
+    } else if (responseObj) {
+        console.log(
+            `    Loaded ${responseObj.length} Repos\n\nUploading new Versions...\n`
+        );
         for (const repo of responseObj) {
             lastUpdatedMap.set(repo.name, repo.updated_at);
             const readmeURL = `https://api.github.com/repos/HenrySeed/${repo.name}/contents/README.md`;
@@ -83,9 +86,15 @@ function renderRepos() {
             request.open("get", readmeURL, true);
             request.send();
         }
+        console.log(`    Done`);
     }
+    console.log("\n\n\n\n");
 }
 
+console.log("\n\n\n\n");
+console.log(
+    `============= Updating Project pages for Henry.nz =============\n\nPlease Wait...\n`
+);
 var request = new XMLHttpRequest();
 request.onload = renderRepos;
 request.open("get", "https://api.github.com/users/HenrySeed/repos", true);

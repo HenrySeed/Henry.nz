@@ -1,38 +1,48 @@
-.projCard {
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-    border: 2px solid rgba(0, 0, 0, 0);
-    transition: 0.1s;
-    border-radius: 12px;
+.buttons {
+    margin: 30px auto 0 auto;
+    width: fit-content;
+    user-select: none;
+    justify-content: center;
+    flex-wrap: wrap;
+    display: flex;
 }
 
-.projFiller {
-    background: #111111;
-    height: 400px;
-    width: 100%;
+.projCard {
+    height: 300px;
+    box-sizing: border-box;
 }
 
 .projCard .imageContainer {
     width: 100%;
-    box-sizing: border-box;
+    height: 300px;
     background-size: cover;
     background-position-x: center;
     background-position-y: top;
+    display: flex;
+    align-items: flex-end;
+}
+
+.projCard .projHover {
+    display: flex;
+    align-items: flex-end;
+    width: 100%;
     height: 300px;
-    border-radius: 10px;
-    padding-top: 110px;
+    backdrop-filter: blur(5px);
+    color: white;
 }
 
 .projCard h3 {
-    width: fit-content;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 10px;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(5px);
-    border-radius: 10px;
-    max-width: 80%;
+    margin: 0px;
+    font-size: 21pt;
+    text-align: right;
+    margin-left: 20%;
+    width: 100%;
+    text-transform: uppercase;
+    white-space: normal;
+    padding: 6%;
+    box-sizing: border-box;
+    background: black;
+    color: white;
 }
 
 @media only screen and (max-width: 898px) {
@@ -73,31 +83,5 @@
     .title > span {
         width: 70vw;
         height: 35vw;
-    }
-}
-
-@media (pointer: fine) {
-    .projCard .imageContainer {
-        padding-top: 0px;
-    }
-
-    .projCard h3 {
-        max-width: none;
-        margin: 0px;
-        font-size: 11pt;
-        box-sizing: border-box;
-        width: 100%;
-        height: 100%;
-        text-align: center;
-        padding-top: 140px;
-    }
-    .projCard:hover {
-        border: 2px solid #fff;
-    }
-    .projCard h3 {
-        display: none;
-    }
-    .projCard:hover h3 {
-        display: block;
     }
 }
