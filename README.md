@@ -3,7 +3,7 @@
 This is a 2-part project,
 
 1. The mouse-stalking snake
-2. A GitHub API based portfolio, automatically fetching and displaying all Repos.
+2. A Firestore-hosted scraped version of my public GitHub Repos
 
 ## 1. Mouse-stalking snake
 
@@ -23,6 +23,6 @@ When the mouse leaves the canvas, it enters its auto-mode. It randomly selects a
 
 ![Love this little CSS rotate animation](https://i.imgur.com/smgc6mq.gif)
 
-Rather than building a portfolio from scratch, the more efficient method is just to take the README.md of each repo and display it nicely. It uses some nice JS and css to display the README's properly.
+Rather than building a portfolio from scratch, surely a more efficient method is just to take the README.md of each repo and slap it behind some pretty CSS. It uses some nice scripts to attatch links to the Github Repo, NPM project or hosted site.
 
-The GitHub API has some read limitations, to get around this, I have a Node script which I can run locally, it reads the github api for all my projects, and saves them to a firestore database as a form of intermediary.
+Initially I just used a direct connection to the GitHub API, but it has some pretty serious read limits. I mean, I'm a bit of a narcissist, but even I don't think  my tiny portfolio site will be getting hundreds of reads, but during development I kept hitting the cap. So rather than creating a local mock-up API for development, I just built a full database backend because even a toddler could whip up a Firestore DB. (This says far more about the well built and robust nature of Firebase than anything else)
