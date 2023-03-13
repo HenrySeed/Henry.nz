@@ -1,11 +1,12 @@
 import "./App.css";
 import { Switch, Route, useLocation } from "react-router-dom";
-import Home, { Article } from "./Home";
 import ProjectView from "./ProjectView";
+import Home, { Article } from "./Home";
 import { Project } from "./Home";
 import { AboutMeView } from "./AboutMeView";
 import { useEffect, useState } from "react";
 import { firebase } from "../components/firebase";
+import { Button } from "@material-ui/core";
 
 const npmProjects = [
     {

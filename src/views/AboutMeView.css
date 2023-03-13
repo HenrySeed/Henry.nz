@@ -11,8 +11,44 @@
     margin-top: 2%;
 }
 
+.asciimap {
+    margin-left: auto;
+    margin-right: auto;
+    width: fit-content;
+    font-size: 12pt;
+    position: relative;
+    background: #000 !important;
+}
+
+.asciimap > .marker {
+    position: absolute;
+    top: 72%;
+    left: 87.4%;
+    background: #000;
+    color: #ffff48;
+    animation: blinker 1.4s step-start infinite;
+}
+
+@keyframes blinker {
+    50% {
+        opacity: 0;
+    }
+}
+
+@media screen and (max-width: 1000px) {
+    .asciimap {
+        font-size: 1.7vw;
+    }
+}
+@media screen and (max-width: 500px) {
+    .asciimap {
+        display: none;
+    }
+}
+
 .jobContainer {
     padding: 6%;
+    border-radius: 20px;
     margin-bottom: 120px;
     margin-top: 50px;
 }

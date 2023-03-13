@@ -13,45 +13,34 @@ export function AboutMeView() {
         years: { year: string; text: string | JSX.Element }[];
     }[] = [
         {
-            date: "2020 - Now",
-            title: "Intermediate Full Stack Developer",
+            date: "2018 - Now",
+            title: "Junior Developer - Senior Developer & Team Lead",
             location: "Amy.app, working remotely",
             color: "#ffff48",
             years: [
                 {
-                    year: "2021",
-                    text: "Began taking on more leadership roles, helped with hiring of full time developer. Led large projects with strict timeline scheduling and estimates.",
-                },
-                {
-                    year: "2020",
-                    text: (
-                        <span>
-                            Helped with hiring of interns as well as mentoring,
-                            training and giving them code reviews
-                            <br />
-                            Coding in Typescript, NodeJS, and React.
-                        </span>
-                    ),
+                    year: "",
+                    text: "Worked as a full stack developer, building front end internal and external tools as well as backend algorithms to support our smart math teaching applications.",
                 },
             ],
         },
-        {
-            date: "2018 - 2019",
-            title: "Junior Full Stack Developer",
-            location: "Amy.app, working remotely",
-            color: "#48ffa0",
-            years: [
-                {
-                    year: "2019",
-                    text: "Worked on complex Tree Based Algorithms written with OO principles in TS and designed multiple frontends in React and Polymer with user feedback and UX principles in mind",
-                },
+        // {
+        //     date: "2018 - 2019",
+        //     title: "Junior Full Stack Developer",
+        //     location: "Amy.app, working remotely",
+        //     color: "#48ffa0",
+        //     years: [
+        //         {
+        //             year: "2019",
+        //             text: "Worked on complex Tree Based Algorithms written with OO principles in TS and designed multiple frontends in React and Polymer with user feedback and UX principles in mind",
+        //         },
 
-                {
-                    year: "2018",
-                    text: "Began by specialising in Front Ends and UX design, then also started focussing on more Back End work and built multiple algorithm heavy projects as well as React internal tools from the ground up",
-                },
-            ],
-        },
+        //         {
+        //             year: "2018",
+        //             text: "Began by specialising in Front Ends and UX design, then also started focussing on more Back End work and built multiple algorithm heavy projects as well as React internal tools from the ground up",
+        //         },
+        //     ],
+        // },
         {
             date: "2016 - 2017",
             title: "Freelance Web Developer",
@@ -129,6 +118,30 @@ export function AboutMeView() {
         },
     ];
 
+    const mapString = `\n              . _..::__:  ,-"-"._       |]       ,     _,.__                
+      _.___ _ _<_>\`!(._\`.\`-.    /        _._     \`_ ,_/  '  '-._.---.-.__
+    .{     " " \`-==,',._\\{  \\  / {) _   / _ ">_,-' \`                 /-/_ 
+    \\_.:--.       \`._ )\`^-. "'     / ( [_/(                       __,/-'    
+    '"'    \\        "    _\\        -_,--'                  )     /. (|      
+           |           ,'         _)_.\\\\._<> {}              _,' /  '      
+           \`.         /          [_/_'\` \`"(                <'}  )         
+            \\\\    .-. )          /   \`-'"..' \`:._          _)  '         
+     \`        \\  (  \`(          /         \`:\\  > \\  ,-^.  /' '          
+               \`._,   ""        |           \\\`'   \\|   ?_)  {\\          
+                  \`=.---.       \`._._       ,'     "\`  |' ,- '.           
+                    |    \`-._        |     /          \`:\`<_|=--._          
+                    (        >       .     | ,          \`=.__.\`-'\\          
+                     \`.     /        |     |{|              ,-.,\\     .     
+                      |   ,'          \\   / \`'            ,"     \\         
+                      |  /             |_'                |  __  /             
+                      | |                                 '-'  \`-'   \\.      
+                      |/                                        "    /         
+                      \\.                                            '        
+                                                                        
+                       ,/           ______._.--._ _..---.---------.           
+    __,-----"-..?----_/ )\\    . ,-'"             "                  (__--/ 
+                        /__/\\/                                            \n\n`;
+
     return (
         <span>
             <MetaTags>
@@ -139,9 +152,13 @@ export function AboutMeView() {
                     <Logo className="projectLogo" />
                 </Link>
                 <h1 className="hello_title">Hi I'm Henry 👋</h1>
-                <h3>
-                    I'm a full-stack developer from &nbsp;&nbsp;🥝 New Zealand
-                </h3>
+
+                <pre className="asciimap">
+                    {mapString}
+                    <div className="marker">#</div>
+                </pre>
+
+                <h3>I'm a full-stack developer from &nbsp;🥝 New Zealand</h3>
                 <p>
                     During the week I'm an algorithm engineer at{" "}
                     <a target="_blank" rel="noreferrer" href="https://amy.app">

@@ -40,15 +40,6 @@ a {
     text-decoration: none;
 }
 
-@media (hover: hover) {
-    a:hover {
-        background: #0e6eff;
-        color: white;
-        padding: 2px;
-        margin: 0 -2px;
-    }
-}
-
 ::-moz-selection {
     background: #0e6eff;
     color: white;
