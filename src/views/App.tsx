@@ -5,79 +5,15 @@ import Home, { Article } from "./Home";
 import { Project } from "./Home";
 import { AboutMeView } from "./AboutMeView";
 import { useEffect, useState } from "react";
-import { db } from "../components/firebase";
-import { collection, getDocs } from "firebase/firestore/lite";
-
-const npmProjects = [
-    {
-        id: "ASCII-WorldMap-NPM",
-        url: "https://www.npmjs.com/package/ascii-worldmap",
-    },
-    {
-        id: "react-screenshot-frame",
-        url: "https://www.npmjs.com/package/react-window-frame",
-    },
-];
+import { BlogList } from "./blog/BlogListView";
+import { BlogPostView } from "./blog/BlogPostView";
+import { useProjects } from "../hooks/useProjects";
+import { useArticles } from "../hooks/useArticles";
 
 function App() {
-    const [projects, setProjects] = useState<Project[]>([]);
-    const [articles, setArticles] = useState<Article[]>([]);
+    const { projects } = useProjects();
+    const { articles } = useArticles();
     const location = useLocation();
-
-    useEffect(() => {
-        getDocs(collection(db, "projects"))
-            .then((snap) => {
-                if (snap) {
-                    const projs: Project[] = [];
-                    snap.forEach((doc) => {
-                        const proj = doc.data() as Project;
-                        proj.npmURL =
-                            npmProjects.find((val) => val.id === proj.id)
-                                ?.url || "";
-                        proj.type = "Project";
-                        projs.push(proj);
-                    });
-                    const blackList = ["HenrySeed", "Henry.nz"];
-                    const filteredProj = projs.filter(
-                        (proj) =>
-                            proj.cover !== "" && !blackList.includes(proj.id)
-                    );
-
-                    // sort projects by last updated
-                    filteredProj.sort((a, b) =>
-                        b.lastUpdated < a.lastUpdated
-                            ? -1
-                            : b.lastUpdated > a.lastUpdated
-                            ? 1
-                            : 0
-                    );
-
-                    setProjects(filteredProj);
-                }
-            });
-    }, []);
-    useEffect(() => {
-        getDocs(collection(db, "articles"))
-            .then((snap) => {
-                if (snap) {
-                    let artics: Article[] = [];
-                    snap.forEach((doc) => {
-                        const article = doc.data() as Article;
-                        article.type = "Article";
-                        artics.push(article);
-                    });
-
-                    artics = artics.filter((val) => val.draft !== true);
-
-                    // sort projects by last updated
-                    artics.sort((a, b) =>
-                        b.date < a.date ? -1 : b.date > a.date ? 1 : 0
-                    );
-
-                    setArticles(artics);
-                }
-            });
-    }, []);
 
     useEffect(() => {
         console.log(`
@@ -108,9 +44,20 @@ function App() {
     return (
         <div className="App">
             <Routes>
-                <Route path="/portfolio/:slug" element={<ProjectView projects={projects} articles={articles} />} />
+                <Route
+                    path="/portfolio/:slug"
+                    element={
+                        <ProjectView projects={projects} articles={articles} />
+                    }
+                />
                 <Route path="/aboutme" element={<AboutMeView />} />
-                <Route path="/" element={<Home articles={articles} projects={projects} />} />
+                <Route path="/blog" element={<BlogList />} />
+                <Route path="/blog/:id" element={<BlogPostView />} />
+
+                <Route
+                    path="/"
+                    element={<Home articles={articles} projects={projects} />}
+                />
             </Routes>
             <footer>
                 <p>

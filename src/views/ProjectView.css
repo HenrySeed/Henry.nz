@@ -1,5 +1,5 @@
 p {
-    line-height: 33px;
+    line-height: 1.65;
 }
 
 h1 {
@@ -7,8 +7,7 @@ h1 {
 }
 
 li {
-    line-height: 33px;
-    margin-bottom: 15px;
+    line-height: 1.65;
 }
 
 pre,

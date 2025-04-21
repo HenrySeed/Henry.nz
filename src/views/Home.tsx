@@ -1,10 +1,10 @@
-import {Snake} from "../components/Snake";
+import { Snake } from "../components/Snake";
 import Logo from "../components/Logo";
 import Button from "../components/Button";
 import { Link } from "react-router";
 import "./Home.css";
 import "./App.css";
-import { CenteredCircular } from "../components/Loading";
+import { CenteredProgress } from "../components/Loading";
 import "../types.d";
 import { RollingTile } from "../components/RollingTile";
 import { Grid } from "@mui/material";
@@ -131,7 +131,7 @@ function Home({
                     key={article.id || "key_" + i}
                 />
             );
-        } else{
+        } else {
             tiles.push(<ProjectTileGrid proj={val} key={val.id} />);
         }
     }
@@ -162,7 +162,7 @@ function Home({
                     {tiles}
                     {tiles.length === 0 && (
                         <Grid size={12}>
-                            <CenteredCircular />
+                            <CenteredProgress />
                         </Grid>
                     )}
                 </Grid>

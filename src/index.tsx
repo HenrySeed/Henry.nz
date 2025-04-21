@@ -3,23 +3,24 @@ import "./index.css";
 import App from "./views/App";
 import { BrowserRouter } from "react-router";
 import { createRoot } from "react-dom/client";
+import { createTheme, ThemeProvider } from "@mui/material";
 
-// const meta = {
-//     title: "Henry Seed | Software Developer",
-//     description: "Hi I'm Henry, a full-stack developer from New Zealand 🥝",
-//     meta: {
-//         charset: "utf-8",
-//         name: {
-//             keywords: "software,henry,henry seed",
-//         },
-//     },
-// };
+const theme = createTheme({
+    palette: {
+        mode: "dark",
+        primary: {
+            main: "#53a6ff",
+        },
+    },
+});
 
 const root = createRoot(document.getElementById("root") as HTMLElement);
 root.render(
     <React.StrictMode>
         <BrowserRouter>
-            <App />
+            <ThemeProvider theme={theme}>
+                <App />
+            </ThemeProvider>
         </BrowserRouter>
     </React.StrictMode>
 );

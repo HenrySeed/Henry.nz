@@ -17,3 +17,24 @@ export function shuffle(array: any[]) {
 
     return array;
 }
+
+export function timeAgo(timestamp: number): string {
+    const seconds = Math.floor((Date.now() - timestamp) / 1000);
+
+    const intervals: [number, string][] = [
+        [60 * 60 * 24 * 365, "year"],
+        [60 * 60 * 24 * 30, "month"],
+        [60 * 60 * 24 * 7, "week"],
+        [60 * 60 * 24, "day"],
+        [60 * 60, "hour"],
+        [60, "minute"],
+        [1, "second"],
+    ];
+
+    for (const [secs, label] of intervals) {
+        const count = Math.floor(seconds / secs);
+        if (count >= 1) return `${count} ${label}${count !== 1 ? "s" : ""} ago`;
+    }
+
+    return "just now";
+}

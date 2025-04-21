@@ -1,13 +1,17 @@
-import { CircularProgress, Stack } from "@mui/material";
+import { CircularProgress, SxProps } from "@mui/material";
 
-export function CenteredCircular() {
+export function CenteredProgress({ sx }: { sx?: SxProps }) {
     return (
-        <Stack
-            direction="row"
-            justifyContent="center"
-            style={{ height: "100%", width: "100%" }}
-        >
-            <CircularProgress sx={{ color: "white" }} />
-        </Stack>
+        <span>
+            <CircularProgress
+                sx={{
+                    color: "white",
+                    display: "block",
+                    marginX: "auto",
+                    marginTop: "30vh",
+                    ...sx,
+                }}
+            />
+        </span>
     );
 }

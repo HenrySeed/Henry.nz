@@ -7,7 +7,7 @@ import MarkdownRender from "../components/MarkdownRender";
 import githubLogo from "../res/GitHub-Mark-Light-64px.png";
 import npmLogo from "../res/npm_logo.png";
 import { CaptionedImage } from "../components/CaptionedImage";
-import { CenteredCircular } from "../components/Loading";
+import { CenteredProgress } from "../components/Loading";
 import { shuffle } from "../utilities";
 
 function ProjectView({
@@ -68,7 +68,7 @@ function ProjectView({
                     <Logo className="projectLogo" />
                 </Link>
                 <div style={{ marginTop: "100px" }}>
-                    <CenteredCircular />
+                    <CenteredProgress />
                 </div>
             </div>
         );
