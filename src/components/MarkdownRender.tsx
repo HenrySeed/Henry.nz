@@ -1,29 +1,48 @@
 import "./markdownStyle.css";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
-import ReactMarkdown from "react-markdown";
+import Markdown, { ExtraProps } from "react-markdown";
 import gfm from "remark-gfm";
 import { CaptionedImage } from "./CaptionedImage";
 
-function CodeBlock({ value, language }: { value: string; language?: string }) {
+type MarkdownCodeProps = React.ClassAttributes<HTMLElement> &
+    React.HTMLAttributes<HTMLElement> &
+    ExtraProps;
+
+function CodeBlock({ children, className, node, ...rest }: MarkdownCodeProps) {
+    const match = /language-(\w+)/.exec(className || "");
+    if (match) {
+        return (
+            <SyntaxHighlighter
+                PreTag="div"
+                children={String(children).replace(/\n$/, "")}
+                language={match[1]}
+                style={vscDarkPlus}
+            />
+        );
+    } else {
+        return (
+            <code {...rest} className={className}>
+                {children}
+            </code>
+        );
+    }
+}
+
+type MarkdownImageProps = React.SVGProps<SVGImageElement> & ExtraProps;
+function CustomImage({ node }: MarkdownImageProps) {
     return (
-        <SyntaxHighlighter language={language} style={vscDarkPlus}>
-            {value}
-        </SyntaxHighlighter>
+        <CaptionedImage
+            caption={node?.properties.alt as string}
+            src={node?.properties.src as string}
+        />
     );
 }
 
-function CustomImage(val: { src: string; alt: string }) {
-    return <CaptionedImage caption={val.alt} src={val.src} />;
-}
-
-function CustomLink({
-    href,
-    children,
-}: {
-    href: string;
-    children: React.ReactElement[];
-}) {
+type MarkdownLinkProps = React.ClassAttributes<HTMLLinkElement> &
+    React.LinkHTMLAttributes<HTMLLinkElement> &
+    ExtraProps;
+function CustomLink({ href, children }: MarkdownLinkProps) {
     return (
         <a href={href} target="_blank" rel="noopener noreferrer">
             {children}
@@ -33,14 +52,15 @@ function CustomLink({
 
 export default function MarkdownRender({ children }: { children: string }) {
     return (
-        <ReactMarkdown
-            source={children}
-            renderers={{
+        <Markdown
+            remarkPlugins={[gfm]}
+            components={{
                 code: CodeBlock,
                 image: CustomImage,
                 link: CustomLink,
             }}
-            plugins={[gfm]}
-        />
+        >
+            {children}
+        </Markdown>
     );
 }

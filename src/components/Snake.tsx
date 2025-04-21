@@ -1,5 +1,8 @@
-import Sketch from "react-p5";
-import p5Types from "p5"; //Import this for typechecking and intellisense
+import * as React from "react";
+import { P5CanvasInstance, ReactP5Wrapper } from "@p5-wrapper/react";
+
+
+
 
 let xPos: number;
 let yPos: number;
@@ -28,8 +31,8 @@ function getRandInt(min: number, max: number) {
     return min + Math.floor(Math.random() * Math.floor(max - min));
 }
 
-function Snake() {
-    function updateListeners(p5: p5Types) {
+function sketch(p5: P5CanvasInstance) {
+    function updateListeners() {
         const resizeListener = () => {
             // only re-render if the width has changed or the height has changed more than 100px
             if (
@@ -73,7 +76,6 @@ function Snake() {
     }
 
     function getRandomCoord(
-        p5: p5Types,
         startX: number,
         startY: number
     ): [number, number] {
@@ -140,7 +142,7 @@ function Snake() {
         return [startX + travelX, startY + travelY];
     }
 
-    function getColor(p5: p5Types) {
+    function getColor() {
         // get normalised x, y
         const normalX = xPos / p5.windowWidth;
         const normalY = yPos / p5.height;
@@ -148,7 +150,6 @@ function Snake() {
     }
 
     function getNewCoords(
-        p5: p5Types,
         targetX: number,
         targetY: number,
         speed: number
@@ -160,16 +161,16 @@ function Snake() {
         return [xPos + xChange * speed * 2, yPos + yChange * speed * 2];
     }
 
-    function addCircle(p5: p5Types, x: number, y: number) {
-        circles.push([x, y, getColor(p5)]);
+    function addCircle(x: number, y: number) {
+        circles.push([x, y, getColor()]);
         // limit the snakle to the snakeLength
         if (circles.length > snakeLength) {
             circles = circles.slice(circles.length - snakeLength);
         }
     }
 
-    const setup = (p5: p5Types, canvasParentRef: Element) => {
-        updateListeners(p5);
+    p5.setup = ( canvasParentRef: Element) => {
+        updateListeners();
         p5.createCanvas(p5.windowWidth, p5.windowHeight * 0.8).parent(
             canvasParentRef
         );
@@ -184,11 +185,11 @@ function Snake() {
         yPos = p5.height / 2;
         ogMousePos = [p5.mouseX, p5.mouseY];
 
-        p5.fill(getColor(p5), 100, 100);
+        p5.fill(getColor(), 100, 100);
         p5.ellipse(xPos, yPos, ellipseWidth, ellipseWidth);
     };
 
-    const draw = (p5: p5Types) => {
+    p5.draw = () => {
         const { mouseX, mouseY } = p5;
 
         if (!canvasActive) {
@@ -199,16 +200,15 @@ function Snake() {
                 Math.round(yPos) !== Math.round(randWalkTarget[1])
             ) {
                 [xPos, yPos] = getNewCoords(
-                    p5,
                     randWalkTarget[0],
                     randWalkTarget[1],
                     movement / 2
                 );
-                addCircle(p5, xPos, yPos);
+                addCircle( xPos, yPos);
                 randWalkTimer -= 1;
             } else {
                 // gen a new target
-                randWalkTarget = getRandomCoord(p5, xPos, yPos);
+                randWalkTarget = getRandomCoord( xPos, yPos);
                 randWalkTimer = 400;
             }
         } else {
@@ -221,8 +221,8 @@ function Snake() {
                 ]);
             if (mousehasMoved) {
                 snakeLength = 50;
-                [xPos, yPos] = getNewCoords(p5, mouseX, mouseY, movement);
-                addCircle(p5, xPos, yPos);
+                [xPos, yPos] = getNewCoords( mouseX, mouseY, movement);
+                addCircle( xPos, yPos);
             }
 
             // if mouse doesnt move for 1000 cycles, switch to auto
@@ -244,8 +244,8 @@ function Snake() {
             );
         }
     };
-
-    return <Sketch setup={setup} draw={draw} />;
 }
 
-export default Snake;
+export function Snake(){
+    return <ReactP5Wrapper sketch={sketch}/>
+}

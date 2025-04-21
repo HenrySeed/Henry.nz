@@ -17,7 +17,6 @@
 
 .spinner .front {
     transform: translateZ(150px);
-    background: #222;
 }
 
 .spinner .bottom {

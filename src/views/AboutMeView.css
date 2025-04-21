@@ -23,9 +23,10 @@
 .asciimap > .marker {
     position: absolute;
     top: 72%;
-    left: 87.4%;
+    left: 87%;
     background: #000;
-    color: #ffff48;
+    color: red;
+    font-weight: bold;
     animation: blinker 1.4s step-start infinite;
 }
 
@@ -83,7 +84,7 @@ tr {
     line-height: 1.8;
 }
 
-td:first-child {
+td.year {
     padding-right: 1vw;
     opacity: 1;
     font-weight: 800;

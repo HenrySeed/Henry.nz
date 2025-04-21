@@ -1,12 +1,11 @@
-import React, { useEffect, useRef } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import { Link, useParams } from "react-router";
 import { Article, Project, ProjectTile } from "../views/Home";
 import Logo from "../components/Logo";
 import "./ProjectView.css";
 import MarkdownRender from "../components/MarkdownRender";
 import githubLogo from "../res/GitHub-Mark-Light-64px.png";
 import npmLogo from "../res/npm_logo.png";
-import MetaTags from "react-meta-tags";
 import { CaptionedImage } from "../components/CaptionedImage";
 import { CenteredCircular } from "../components/Loading";
 import { shuffle } from "../utilities";
@@ -31,6 +30,37 @@ function ProjectView({
         }
     });
 
+    let date;
+    let title = proj?.title || "";
+    let alltiles: (Article | Project)[] = articles;
+
+    if (proj) {
+        // get the date
+        if (proj.type === "Article") {
+            date = new Date(proj.date.seconds * 1000);
+        } else {
+            date = new Date(proj.lastUpdated);
+        }
+
+        // get the title and markdown
+        if (proj.type === "Project") {
+            if (proj.markdown.split("\n")[0][0] === "#") {
+                title = proj.markdown.split("\n")[0].replace(/#/g, "").trim();
+                proj.markdown = proj.markdown.split("\n").slice(1).join("\n");
+            }
+        }
+
+        // get a list of articles for the ticker at the bottom
+        alltiles = alltiles
+            .concat(projects)
+            .filter((val) => val.id !== proj.id);
+        alltiles = shuffle(alltiles);
+    }
+
+    useEffect(() => {
+        document.title = `Henry Seed - ${title}`;
+    }, [title]);
+
     if (proj === undefined) {
         return (
             <div className="projWrapper">
@@ -44,32 +74,8 @@ function ProjectView({
         );
     }
 
-    let date;
-    if (proj.type === "Article") {
-        date = new Date(proj.date.seconds * 1000);
-    } else {
-        date = new Date(proj.lastUpdated);
-    }
-
-    // strip the leading title out of project
-    let title = proj.title;
-
-    if (proj.type === "Project") {
-        if (proj.markdown.split("\n")[0][0] === "#") {
-            title = proj.markdown.split("\n")[0].replace(/#/g, "").trim();
-            proj.markdown = proj.markdown.split("\n").slice(1).join("\n");
-        }
-    }
-
-    let alltiles: (Article | Project)[] = articles;
-    alltiles = alltiles.concat(projects).filter((val) => val.id !== proj.id);
-    alltiles = shuffle(alltiles);
-
     return (
         <span>
-            <MetaTags>
-                <title>{`Henry Seed - ${title}`}</title>
-            </MetaTags>
             <div className="projWrapper">
                 <Link to="/">
                     <Logo className="projectLogo" />

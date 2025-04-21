@@ -12,6 +12,8 @@ keys/
 # testing
 /coverage
 
+/scripts/node_modules
+
 # production
 /build
 

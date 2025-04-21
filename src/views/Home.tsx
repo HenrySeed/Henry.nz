@@ -1,14 +1,14 @@
-import Snake from "../components/Snake";
+import {Snake} from "../components/Snake";
 import Logo from "../components/Logo";
-import { Grid } from "@material-ui/core";
 import Button from "../components/Button";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import "./Home.css";
 import "./App.css";
 import { CenteredCircular } from "../components/Loading";
-import MetaTags from "react-meta-tags";
 import "../types.d";
 import { RollingTile } from "../components/RollingTile";
+import { Grid } from "@mui/material";
+import { useEffect } from "react";
 
 export interface Project {
     id: string;
@@ -87,7 +87,7 @@ export function ProjectTile({ proj }: { proj: Article | Project }) {
 
 export function ProjectTileGrid({ proj }: { proj: Article | Project }) {
     return (
-        <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 6, lg: 4, xl: 3 }}>
             <ProjectTile proj={proj} />
         </Grid>
     );
@@ -100,9 +100,27 @@ function Home({
     projects: Project[];
     articles: Article[];
 }) {
+    const favArticles = [
+        "Half-a-Cup",
+        "ProjectHub",
+        "heuristic-automata-matching-of-nlp-with-home-assistant-applications",
+        "Unraid-Startpage",
+        "react-screenshot-frame",
+        "node-dungen",
+        "Incoherent",
+    ];
+
     const articleIndexes = [4, 6];
     const tiles = [];
-    for (const [i, val] of projects.entries()) {
+    for (const val of favArticles.map((id) =>
+        projects.find((p) => p.id === id)
+    )) {
+        if (!val) continue;
+        tiles.push(<ProjectTileGrid proj={val} key={val.id} />);
+    }
+    for (const [i, val] of projects
+        .filter((p) => !favArticles.includes(p.id))
+        .entries()) {
         const artIndex = articleIndexes.indexOf(i);
         const article = artIndex > -1 ? articles[artIndex] : undefined;
 
@@ -117,11 +135,12 @@ function Home({
         tiles.push(<ProjectTileGrid proj={val} key={val.id} />);
     }
 
+    useEffect(() => {
+        document.title = "Henry Seed | Software Developer";
+    }, []);
+
     return (
         <div>
-            <MetaTags>
-                <title>Henry Seed | Software Developer</title>
-            </MetaTags>
             <div id="sketchHolder">
                 <Snake />
             </div>
@@ -141,7 +160,7 @@ function Home({
                 <Grid container spacing={0}>
                     {tiles}
                     {tiles.length === 0 && (
-                        <Grid item xs={12}>
+                        <Grid size={12}>
                             <CenteredCircular />
                         </Grid>
                     )}

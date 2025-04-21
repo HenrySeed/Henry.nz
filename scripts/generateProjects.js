@@ -1,14 +1,19 @@
-const admin = require("firebase-admin");
-const serviceAccount = require("../keys/henrynz-firebase-adminsdk-jzw87-5b7cf4e917.json");
-var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-var atob = require("atob");
+import admin from "firebase-admin";
+import atob from "atob";
+import * as mediumToMarkdown from "medium-to-markdown";
+import fetch from "node-fetch";
+import { createRequire } from "module";
+
+const require = createRequire(import.meta.url);
+const serviceAccount = require("../keys/serviceAccountKey.json");
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: "https://wholecup-72a6b.firebaseio.com",
 });
 
-const firestore = admin.firestore().collection("projects");
+const projectsDB = admin.firestore().collection("projects");
+const articlesDB = admin.firestore().collection("articles");
 const demoURLMap = new Map();
 const lastUpdatedMap = new Map();
 
@@ -16,8 +21,8 @@ const lastUpdatedMap = new Map();
  * A callback for the HTTP request for a given GitHub Repo, adds it to the Body via innerHTML
  * @returns
  */
-function getRepoReadme(demoURL) {
-    const responseObj = JSON.parse(this.responseText);
+function scrapeGitHubRepo(responseText) {
+    const responseObj = JSON.parse(responseText);
     if (!responseObj.content) {
         return;
     }
@@ -26,7 +31,7 @@ function getRepoReadme(demoURL) {
     const camalCaseRegex = /[a-z][A-Z][a-z]/g;
     let title = rawName.replace(/-/g, " ").replace(/_/g, " ");
     if (title.match(camalCaseRegex)) {
-        for (const match of title.match(camalCaseRegex)) {
+        for (const match of title.match(camalCaseRegex) || []) {
             title = title.replace(match, match[0] + " " + match[1] + match[2]);
         }
     }
@@ -40,7 +45,7 @@ function getRepoReadme(demoURL) {
     const image_regex = /!\[.+\](.+)/g;
     const images = [];
     if (readmeMD.match(image_regex)) {
-        for (const match of readmeMD.match(image_regex)) {
+        for (const match of readmeMD.match(image_regex) || []) {
             images.push(match.split("(")[1].split(" ")[0].replace(")", ""));
         }
     }
@@ -55,7 +60,7 @@ function getRepoReadme(demoURL) {
         lastUpdated: lastUpdatedMap.get(rawName) || "2010-11-12T11:37:07Z", // default to a date before any other projects
     };
 
-    firestore
+    projectsDB
         .doc(readMeObj.id)
         .set(readMeObj)
         .catch(function (error) {
@@ -64,10 +69,10 @@ function getRepoReadme(demoURL) {
 }
 
 /**
- * Displays all given repos from Github
+ * Gets all repos from a profile and scrapes each one
  */
-function renderRepos() {
-    const responseObj = JSON.parse(this.responseText);
+async function scrapeProfileRepos(responseText) {
+    const responseObj = JSON.parse(responseText);
 
     if (responseObj?.message?.startsWith("API rate limit exceeded")) {
         console.log(
@@ -79,23 +84,98 @@ function renderRepos() {
         );
         for (const repo of responseObj) {
             lastUpdatedMap.set(repo.name, repo.updated_at);
-            const readmeURL = `https://api.github.com/repos/HenrySeed/${repo.name}/contents/README.md`;
             demoURLMap.set(repo.name, repo.homepage);
-            var request = new XMLHttpRequest();
-            request.onload = getRepoReadme;
-            request.open("get", readmeURL, true);
-            request.send();
+            const request = await fetch(
+                `https://api.github.com/repos/HenrySeed/${repo.name}/contents/README.md`
+            );
+            scrapeGitHubRepo(await request.text());
         }
         console.log(`    Done`);
     }
     console.log("\n\n\n\n");
 }
 
-console.log("\n\n\n\n");
-console.log(
-    `============= Updating Project pages for Henry.nz =============\n\nPlease Wait...\n`
-);
-var request = new XMLHttpRequest();
-request.onload = renderRepos;
-request.open("get", "https://api.github.com/users/HenrySeed/repos", true);
-request.send();
+/**
+ * SCrapes a GitHub Profile
+ */
+async function scrapeGitHubProfile() {
+    const request = await fetch("https://api.github.com/users/HenrySeed/repos");
+    scrapeProfileRepos(await request.text());
+}
+
+/**
+ * Scrapes a list of Medium articles
+ */
+function scrapeMedium() {
+    console.log("Loading Medium Articles");
+    const articles = [
+        "https://medium.com/@henryseed/1473c784b8f0",
+        "https://medium.com/@henryseed/796f29840fb4",
+    ];
+    for (const article of articles) {
+        console.log(
+            `Loading article ${article.replace(/.*medium\.com\//, "")}`
+        );
+        // Enter url here
+        mediumToMarkdown
+            .convertFromUrl(article)
+            .then(function (markdown) {
+                let cleaned = markdown.split("\n");
+                // find the line of the first heading
+                const firstHeading = cleaned.findIndex((line) =>
+                    line.startsWith("=")
+                );
+                cleaned = cleaned.slice(firstHeading - 1);
+                const title = cleaned[0];
+                const id = cleaned[0]
+                    .toLowerCase()
+                    .replace(/[^A-z ]/g, "")
+                    .replace(/ /g, "-");
+
+                const firstImg = (
+                    cleaned.find((line) => line.startsWith("![")) || ""
+                )
+                    .replace(/!\[(.*)\]\((.*)\)/g, "$1,$2")
+                    .split(",");
+
+                // remove the title and first image lines from the markdown
+                cleaned = cleaned.slice(2);
+                cleaned.splice(
+                    cleaned.findIndex((line) => line.startsWith("![")),
+                    1
+                );
+
+                const readMeObj = {
+                    id,
+                    title,
+                    cover: {
+                        src: firstImg[1],
+                        caption: firstImg[0],
+                    },
+                    contents: cleaned.join("\n"),
+                    draft: false,
+                    genre: "",
+                    date: { seconds: Date.now() / 1000 },
+                    tags: [],
+                };
+                articlesDB
+                    .doc(id)
+                    .set(readMeObj)
+                    .catch(function (error) {
+                        console.error("Error writing document: ", error);
+                    });
+            })
+            .catch((error) => console.error(error));
+    }
+}
+
+async function main() {
+    console.log("\n\n");
+    console.log(
+        `============= Updating Project pages for Henry.nz =============\n\nPlease Wait...\n`
+    );
+    await scrapeGitHubProfile();
+    // scrapeMedium();
+}
+
+main();

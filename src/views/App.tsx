@@ -1,12 +1,12 @@
 import "./App.css";
-import { Switch, Route, useLocation } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router";
 import ProjectView from "./ProjectView";
 import Home, { Article } from "./Home";
 import { Project } from "./Home";
 import { AboutMeView } from "./AboutMeView";
 import { useEffect, useState } from "react";
-import { firebase } from "../components/firebase";
-import { Button } from "@material-ui/core";
+import { db } from "../components/firebase";
+import { collection, getDocs } from "firebase/firestore/lite";
 
 const npmProjects = [
     {
@@ -25,10 +25,7 @@ function App() {
     const location = useLocation();
 
     useEffect(() => {
-        firebase
-            .firestore()
-            .collection("projects")
-            .get()
+        getDocs(collection(db, "projects"))
             .then((snap) => {
                 if (snap) {
                     const projs: Project[] = [];
@@ -60,10 +57,7 @@ function App() {
             });
     }, []);
     useEffect(() => {
-        firebase
-            .firestore()
-            .collection("articles")
-            .get()
+        getDocs(collection(db, "projects"))
             .then((snap) => {
                 if (snap) {
                     let artics: Article[] = [];
@@ -113,17 +107,11 @@ function App() {
 
     return (
         <div className="App">
-            <Switch>
-                <Route path="/portfolio/:slug">
-                    <ProjectView projects={projects} articles={articles} />
-                </Route>
-                <Route path="/aboutme">
-                    <AboutMeView />
-                </Route>
-                <Route path="/">
-                    <Home articles={articles} projects={projects} />
-                </Route>
-            </Switch>
+            <Routes>
+                <Route path="/portfolio/:slug" element={<ProjectView projects={projects} articles={articles} />} />
+                <Route path="/aboutme" element={<AboutMeView />} />
+                <Route path="/" element={<Home articles={articles} projects={projects} />} />
+            </Routes>
             <footer>
                 <p>
                     <span style={{ marginBottom: "10px", display: "block" }}>

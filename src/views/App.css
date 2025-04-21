@@ -50,7 +50,7 @@
     text-decoration: none;
     color: #ffffff;
     font-family: sans-serif;
-    padding: 11px 15px 13px 15px !important;
+    padding: 11px 15px !important;
     border: #ffffff solid 1.5px;
     box-shadow: 0 0 1px 0px white inset, 0 0 1px 0px white;
     font-size: 14pt;
@@ -72,6 +72,6 @@
 .button:hover {
     background-color: #ffffff;
     color: #000000;
-    padding: 11px 15px 13px 15px !important;
+    padding: 11px 15px !important;
     margin: 0 5px 10px 5px !important;
 }
