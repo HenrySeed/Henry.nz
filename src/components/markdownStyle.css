@@ -6,11 +6,15 @@ h2 {
 }
 
 code {
-    background-color: #111 !important;
     display: inline-block;
     padding: 5px 10px;
     border-radius: 5px;
     font-size: 11pt !important;
+    background: none;
+}
+
+pre > div {
+    background: none !important
 }
 
 pre code {

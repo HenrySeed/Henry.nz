@@ -57,7 +57,7 @@ function App() {
             });
     }, []);
     useEffect(() => {
-        getDocs(collection(db, "projects"))
+        getDocs(collection(db, "articles"))
             .then((snap) => {
                 if (snap) {
                     let artics: Article[] = [];

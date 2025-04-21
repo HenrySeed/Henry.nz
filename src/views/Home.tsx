@@ -131,8 +131,9 @@ function Home({
                     key={article.id || "key_" + i}
                 />
             );
+        } else{
+            tiles.push(<ProjectTileGrid proj={val} key={val.id} />);
         }
-        tiles.push(<ProjectTileGrid proj={val} key={val.id} />);
     }
 
     useEffect(() => {
