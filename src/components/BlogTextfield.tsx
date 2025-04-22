@@ -3,6 +3,8 @@ import {
     Box,
     CircularProgress,
     Stack,
+    Tab,
+    Tabs,
     TextField,
     TextFieldProps,
     Typography,
@@ -10,12 +12,23 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
+import { imageHostingUrl } from "../utilities";
+import MarkdownRender from "./MarkdownRender";
+import { useKeyPress } from "../hooks/useKeyPress";
 
 export function BlogTextfield(textFieldProps: TextFieldProps) {
     const [isDragging, setDragging] = useState(false);
     const [isUploading, setUploading] = useState(false);
     const theme = useTheme();
     const { user } = useAuth();
+    const [preview, setPreview] = useState(false);
+
+    useKeyPress((e) => {
+        if (e.key === "Tab") {
+            setPreview(!preview);
+            e.preventDefault();
+        }
+    });
 
     async function handleDrop(e: React.DragEvent<HTMLDivElement>) {
         e.preventDefault();
@@ -30,7 +43,7 @@ export function BlogTextfield(textFieldProps: TextFieldProps) {
 
                 const idToken = user && (await user.getIdToken());
 
-                const res = await fetch("http://localhost:3001/upload", {
+                const res = await fetch(`${imageHostingUrl}/upload`, {
                     method: "POST",
                     body: form,
                     headers: {
@@ -45,7 +58,7 @@ export function BlogTextfield(textFieldProps: TextFieldProps) {
                         target: {
                             value:
                                 textFieldProps.value +
-                                `\n![Image](http://localhost:3001${versions.full})`,
+                                `\n![Image](${imageHostingUrl}${versions.full})`,
                         },
                     } as React.ChangeEvent<HTMLInputElement>;
                     textFieldProps.onChange &&
@@ -62,68 +75,101 @@ export function BlogTextfield(textFieldProps: TextFieldProps) {
     }
 
     return (
-        <Box
-            sx={{
-                display: "grid",
-                position: "relative",
-                ...textFieldProps.sx,
-            }}
-        >
-            {isDragging && (
-                <Typography
+        <Stack spacing={3}>
+            <Tabs
+                value={preview ? "Preview" : "Edit"}
+                onChange={(_, newVal) =>
+                    setPreview(newVal === "Preview" ? true : false)
+                }
+                aria-label="basic tabs example"
+            >
+                <Tab
+                    disabled={textFieldProps.disabled}
+                    value="Edit"
+                    label="Edit"
+                />
+                <Tab
+                    disabled={textFieldProps.disabled}
+                    value="Preview"
+                    label="Preview"
+                />
+            </Tabs>
+            {!preview && (
+                <Box
                     sx={{
-                        position: "absolute",
-                        inset: 0,
-                        top: "110px",
-                        textAlign: "center",
-                        fontSize: "20pt",
+                        display: "grid",
+                        position: "relative",
+                        ...textFieldProps.sx,
                     }}
-                    color="primary"
                 >
-                    <Upload /> Upload Image
-                </Typography>
-            )}
-            {isUploading && (
-                <Stack
-                    spacing={2}
-                    sx={{
-                        position: "absolute",
-                        inset: 0,
-                        top: "80px",
-                    }}
-                    alignItems={"center"}
-                >
-                    <CircularProgress />
-                    <Typography
+                    {isDragging && (
+                        <Stack
+                            spacing={1}
+                            sx={{
+                                position: "absolute",
+                                inset: 0,
+                            }}
+                            justifyContent="center"
+                            alignItems={"center"}
+                        >
+                            <Typography
+                                sx={{ fontSize: "18pt" }}
+                                color="primary"
+                            >
+                                <Upload /> Upload Image
+                            </Typography>
+                        </Stack>
+                    )}
+                    {isUploading && (
+                        <Stack
+                            spacing={1}
+                            sx={{
+                                position: "absolute",
+                                inset: 0,
+                            }}
+                            justifyContent="center"
+                            alignItems={"center"}
+                        >
+                            <CircularProgress size={30} />
+                            <Typography
+                                sx={{
+                                    fontSize: "18pt",
+                                }}
+                                color="primary"
+                            >
+                                Uploading
+                            </Typography>
+                        </Stack>
+                    )}
+                    <TextField
+                        {...textFieldProps}
+                        disabled={textFieldProps.disabled || isUploading}
                         sx={{
-                            fontSize: "20pt",
+                            ...(isDragging && {
+                                "& fieldset": {
+                                    borderColor: theme.palette.primary.main,
+                                },
+                                "& textarea, & input": {
+                                    color: theme.palette.action.disabled,
+                                },
+                            }),
                         }}
-                        color="primary"
-                    >
-                        Uploading
-                    </Typography>
-                </Stack>
+                        onDragOver={(e) => {
+                            e.preventDefault();
+                            setDragging(true);
+                        }}
+                        onDragLeave={() => setDragging(false)}
+                        onDrop={handleDrop}
+                    />
+                </Box>
             )}
-            <TextField
-                {...textFieldProps}
-                disabled={textFieldProps.disabled || isUploading}
-                sx={{
-                    ...(isDragging && {
-                        "& fieldset": {
-                            borderColor: theme.palette.primary.main,
-                        },
-                        "& textarea, & input": {
-                            color: theme.palette.action.disabled,
-                        },
-                    }),
-                }}
-                onDragOver={(e) => {
-                    e.preventDefault();
-                    setDragging(true);
-                }}
-                onDragLeave={() => setDragging(false)}
-                onDrop={handleDrop}
-            />
-        </Box>
+            {preview && (
+                <div style={{ minHeight: "125px" }}>
+                    <MarkdownRender>
+                        {textFieldProps.value as string}
+                    </MarkdownRender>
+                </div>
+            )}
+        </Stack>
     );
 }

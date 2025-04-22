@@ -1,9 +1,9 @@
-import src from "@emotion/styled";
 import { useState, useEffect } from "react";
 import { useAuth } from "./useAuth";
 
 export function useImage(url: string) {
     const [imageUrl, setImageUrl] = useState("");
+    const [loading, setLoading] = useState(true);
     const { user } = useAuth();
 
     useEffect(() => {
@@ -13,14 +13,17 @@ export function useImage(url: string) {
                     headers: {
                         Authorization: `Bearer ${idToken}`,
                     },
-                }).then(async (res) => {
-                    const blob = await res.blob();
-                    const url = URL.createObjectURL(blob);
-                    setImageUrl(url);
-                });
+                })
+                    .then(async (res) => {
+                        const blob = await res.blob();
+                        const url = URL.createObjectURL(blob);
+                        setImageUrl(url);
+                        setLoading(false);
+                    })
+                    .catch(() => setLoading(false));
             });
         }
-    }, [src, user]);
+    }, [user, url]);
 
-    return { url: imageUrl };
+    return { url: imageUrl, loading };
 }

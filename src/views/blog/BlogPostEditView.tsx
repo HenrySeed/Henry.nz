@@ -6,8 +6,6 @@ import {
     InputLabel,
     Select,
     MenuItem,
-    Tabs,
-    Tab,
     Button,
     CircularProgress,
 } from "@mui/material";
@@ -15,7 +13,6 @@ import { setDoc, doc } from "firebase/firestore/lite";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { db } from "../../components/firebase";
-import MarkdownRender from "../../components/MarkdownRender";
 import { useAuth } from "../../hooks/useAuth";
 import { BlogPost } from "../../types";
 import { BlogTextfield } from "../../components/BlogTextfield";
@@ -34,8 +31,6 @@ export function BlogPostEditView({
     const [type, setType] = useState<"Text Post" | "Timeline Post">(
         "Text Post"
     );
-
-    const [preview, setPreview] = useState(false);
     const [saving, setSaving] = useState(false);
     const [deleting, setDeleting] = useState(false);
     const navigate = useNavigate();
@@ -135,42 +130,19 @@ export function BlogPostEditView({
                     </FormControl>
                 )}
                 {type === "Text Post" && (
-                    <>
-                        <Tabs
-                            value={preview ? "Preview" : "Edit"}
-                            onChange={(_, newVal) =>
-                                setPreview(newVal === "Preview" ? true : false)
-                            }
-                            aria-label="basic tabs example"
-                        >
-                            <Tab disabled={saving} value="Edit" label="Edit" />
-                            <Tab
-                                disabled={saving}
-                                value="Preview"
-                                label="Preview"
-                            />
-                        </Tabs>
-                        {!preview && (
-                            <Stack spacing={2}>
-                                <BlogTextfield
-                                    disabled={saving}
-                                    maxRows={20}
-                                    multiline
-                                    minRows={10}
-                                    variant="outlined"
-                                    label="Content"
-                                    onChange={(e) => setContent(e.target.value)}
-                                    value={content}
-                                />
-                                {/* TODO: tags */}
-                            </Stack>
-                        )}
-                        {preview && (
-                            <div style={{ minHeight: "250px" }}>
-                                <MarkdownRender>{content}</MarkdownRender>
-                            </div>
-                        )}
-                    </>
+                    <Stack spacing={2}>
+                        <BlogTextfield
+                            disabled={saving}
+                            maxRows={20}
+                            multiline
+                            minRows={10}
+                            variant="outlined"
+                            label="Content"
+                            onChange={(e) => setContent(e.target.value)}
+                            value={content}
+                        />
+                        {/* TODO: tags */}
+                    </Stack>
                 )}
                 <Stack
                     direction="row"

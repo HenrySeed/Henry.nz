@@ -4,9 +4,7 @@ import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import Markdown, { ExtraProps } from "react-markdown";
 import gfm from "remark-gfm";
 import { CaptionedImage } from "./CaptionedImage";
-import { useEffect, useState } from "react";
-import { useAuth } from "../hooks/useAuth";
-import { getImagepaths } from "../utilities";
+import { getImagePaths } from "../utilities";
 import { useImage } from "../hooks/useImage";
 
 type MarkdownCodeProps = React.ClassAttributes<HTMLElement> &
@@ -38,11 +36,26 @@ type MarkdownImageProps = React.ClassAttributes<HTMLImageElement> &
     ExtraProps;
 function CustomImage({ node }: MarkdownImageProps) {
     const src = node?.properties.src as string;
-    const variants = getImagepaths(src);
-    const { url } = useImage(variants.large);
+    const { large, full } = getImagePaths(src);
+    const { url } = useImage(src.endsWith(".gif") ? full : large);
+    const imageName = full.split("/").slice(-1);
 
     return (
-        <CaptionedImage caption={node?.properties.alt as string} src={url} />
+        <span
+            onClick={() =>
+                window.open(
+                    `/blog/images/${imageName}`,
+                    "_blank",
+                    "noopener,noreferrer"
+                )
+            }
+            style={{ cursor: "pointer" }}
+        >
+            <CaptionedImage
+                caption={node?.properties.alt as string}
+                src={url}
+            />
+        </span>
     );
 }
 

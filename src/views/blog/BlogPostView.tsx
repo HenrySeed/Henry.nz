@@ -7,7 +7,6 @@ import {
     CardContent,
     CircularProgress,
     Stack,
-    TextField,
     Typography,
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router";
@@ -19,6 +18,7 @@ import { TimeStamp } from "../../components/TimeStamp";
 import { useBlogPost } from "../../hooks/useBlogPost";
 import { BlogPost, TimelineItem } from "../../types";
 import { BlogPostEditView } from "./BlogPostEditView";
+import { BlogTextfield } from "../../components/BlogTextfield";
 
 export function BlogPostView() {
     const { id } = useParams();
@@ -89,7 +89,6 @@ function TimeLinePostView({
     const [items, setItems] = useState<TimelineItem[]>([]);
     const [newItem, setNewItem] = useState("");
     const [saving, setSaving] = useState(false);
-    const [preview, setPreview] = useState(false);
 
     useEffect(() => {
         setItems(JSON.parse(blogPost.content));
@@ -115,7 +114,6 @@ function TimeLinePostView({
         );
 
         setNewItem("");
-        setPreview(false);
         onPost();
         setSaving(false);
     }
@@ -125,34 +123,24 @@ function TimeLinePostView({
             <h1 style={{ marginBottom: "40px" }}>{blogPost.title}</h1>
             <Stack spacing={3}>
                 <Stack spacing={2}>
-                    {!preview ? (
-                        <TextField
-                            disabled={saving}
-                            onChange={(e) => setNewItem(e.target.value)}
-                            onKeyDown={(e) =>
-                                e.key === "Enter" && !e.shiftKey && handleSave()
-                            }
-                            autoFocus
-                            label="New Post"
-                            rows={4}
-                            multiline
-                            value={newItem}
-                        />
-                    ) : (
-                        <MarkdownRender>{newItem}</MarkdownRender>
-                    )}
+                    <BlogTextfield
+                        disabled={saving}
+                        onChange={(e) => setNewItem(e.target.value)}
+                        onKeyDown={(e) =>
+                            e.key === "Enter" && !e.shiftKey && handleSave()
+                        }
+                        autoFocus
+                        label="New Post"
+                        rows={4}
+                        multiline
+                        value={newItem}
+                    />
+
                     <Stack
                         direction="row"
-                        justifyContent={
-                            newItem.length > 0 ? "space-between" : "flex-end"
-                        }
+                        justifyContent={"flex-end"}
                         spacing={2}
                     >
-                        {newItem.length > 0 && (
-                            <Button onClick={() => setPreview(!preview)}>
-                                {!preview ? "Preview" : "Edit"}
-                            </Button>
-                        )}
                         <Button
                             // Disabled when the new item is only whitespace
                             disabled={

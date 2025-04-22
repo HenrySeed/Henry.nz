@@ -1,3 +1,5 @@
+export const imageHostingUrl = "http://localhost:3001";
+
 export function shuffle(array: any[]) {
     var currentIndex = array.length,
         randomIndex;
@@ -39,13 +41,13 @@ export function timeAgo(timestamp: number): string {
     return "just now";
 }
 
-export function getImagepaths(url: string) {
+export function getImagePaths(url: string) {
     const baseUrl = url.replace(
         /(?:-thumb)|(?:-large)(\.[a-zA-Z]{1,5})/g,
         "$1"
     );
     const noExt = baseUrl.replace(/\.[A-Za-z]{1,5}/g, "");
-    const ext = baseUrl.match(/\.[A-Za-z]{1,5}/g)?.[0];
+    const ext = url.match(/\.[A-Za-z]{1,5}$/g)?.[0];
 
     return {
         thumb: `${noExt}-thumb${ext}`,
