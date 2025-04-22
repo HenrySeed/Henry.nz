@@ -4,6 +4,10 @@ import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import Markdown, { ExtraProps } from "react-markdown";
 import gfm from "remark-gfm";
 import { CaptionedImage } from "./CaptionedImage";
+import { useEffect, useState } from "react";
+import { useAuth } from "../hooks/useAuth";
+import { getImagepaths } from "../utilities";
+import { useImage } from "../hooks/useImage";
 
 type MarkdownCodeProps = React.ClassAttributes<HTMLElement> &
     React.HTMLAttributes<HTMLElement> &
@@ -29,13 +33,16 @@ function CodeBlock({ children, className, node, ...rest }: MarkdownCodeProps) {
     }
 }
 
-type MarkdownImageProps = React.SVGProps<SVGImageElement> & ExtraProps;
+type MarkdownImageProps = React.ClassAttributes<HTMLImageElement> &
+    React.ImgHTMLAttributes<HTMLImageElement> &
+    ExtraProps;
 function CustomImage({ node }: MarkdownImageProps) {
+    const src = node?.properties.src as string;
+    const variants = getImagepaths(src);
+    const { url } = useImage(variants.large);
+
     return (
-        <CaptionedImage
-            caption={node?.properties.alt as string}
-            src={node?.properties.src as string}
-        />
+        <CaptionedImage caption={node?.properties.alt as string} src={url} />
     );
 }
 
@@ -56,7 +63,7 @@ export default function MarkdownRender({ children }: { children: string }) {
             remarkPlugins={[gfm]}
             components={{
                 code: CodeBlock,
-                image: CustomImage,
+                img: CustomImage,
                 link: CustomLink,
             }}
         >

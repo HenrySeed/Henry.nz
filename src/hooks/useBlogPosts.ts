@@ -1,6 +1,4 @@
-import { getDocs, collection } from "firebase/firestore/lite";
-import { useState, useEffect, useCallback } from "react";
-import { db } from "../components/firebase";
+import { useState, useEffect } from "react";
 import { BlogPost } from "../types";
 import { useDocs } from "./useDocs";
 

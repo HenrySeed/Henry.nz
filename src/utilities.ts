@@ -38,3 +38,18 @@ export function timeAgo(timestamp: number): string {
 
     return "just now";
 }
+
+export function getImagepaths(url: string) {
+    const baseUrl = url.replace(
+        /(?:-thumb)|(?:-large)(\.[a-zA-Z]{1,5})/g,
+        "$1"
+    );
+    const noExt = baseUrl.replace(/\.[A-Za-z]{1,5}/g, "");
+    const ext = baseUrl.match(/\.[A-Za-z]{1,5}/g)?.[0];
+
+    return {
+        thumb: `${noExt}-thumb${ext}`,
+        large: `${noExt}-large${ext}`,
+        full: baseUrl,
+    };
+}

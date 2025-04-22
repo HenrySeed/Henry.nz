@@ -1,10 +1,9 @@
 import "./App.css";
 import { Route, Routes, useLocation } from "react-router";
 import ProjectView from "./ProjectView";
-import Home, { Article } from "./Home";
-import { Project } from "./Home";
+import Home from "./Home";
 import { AboutMeView } from "./AboutMeView";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { BlogList } from "./blog/BlogListView";
 import { BlogPostView } from "./blog/BlogPostView";
 import { useProjects } from "../hooks/useProjects";

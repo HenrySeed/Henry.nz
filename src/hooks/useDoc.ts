@@ -37,7 +37,7 @@ export function useDoc(path: string, options?: { skip?: boolean }) {
                 }
             })
             .catch((e) => setError(e));
-    }, [refetchCounter, options?.skip]);
+    }, [path, refetchCounter, options?.skip]);
 
     const refetch = useCallback(() => {
         setRefetchCounter((prev) => prev + 1);

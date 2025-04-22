@@ -19,7 +19,7 @@ export function useArticles() {
         artics.sort((a, b) => (b.date < a.date ? -1 : b.date > a.date ? 1 : 0));
 
         setArticles(artics);
-    }, []);
+    }, [docs]);
 
     return { articles, loading, refetch };
 }

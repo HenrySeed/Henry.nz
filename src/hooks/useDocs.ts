@@ -41,7 +41,7 @@ export function useDocs(collectionName: string, options?: { skip?: boolean }) {
                 }
             })
             .catch((e) => setError(e));
-    }, [refetchCounter, options]);
+    }, [collectionName, refetchCounter, options]);
 
     const refetch = useCallback(() => {
         setRefetchCounter((prev) => prev + 1);

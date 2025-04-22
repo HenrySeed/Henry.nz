@@ -18,7 +18,7 @@ export function useBlogPost(id: string | undefined) {
                 updated: new Date(doc.updated),
             });
         }
-    }, [doc]);
+    }, [doc, id]);
 
     return { blogPost, loading, refetch };
 }
