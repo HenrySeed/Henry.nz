@@ -34,10 +34,11 @@ function CodeBlock({ children, className, node, ...rest }: MarkdownCodeProps) {
 type MarkdownImageProps = React.ClassAttributes<HTMLImageElement> &
     React.ImgHTMLAttributes<HTMLImageElement> &
     ExtraProps;
+
 function CustomImage({ node }: MarkdownImageProps) {
     const src = node?.properties.src as string;
-    const { large, full } = getImagePaths(src);
-    const { url } = useImage(src.endsWith(".gif") ? full : large);
+    const { full } = getImagePaths(src);
+    const { blobUrl } = useImage(src, src.endsWith(".gif") ? "full" : "large");
     const imageName = full.split("/").slice(-1);
 
     return (
@@ -53,7 +54,7 @@ function CustomImage({ node }: MarkdownImageProps) {
         >
             <CaptionedImage
                 caption={node?.properties.alt as string}
-                src={url}
+                src={blobUrl}
             />
         </span>
     );

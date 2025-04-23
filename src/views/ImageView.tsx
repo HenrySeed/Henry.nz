@@ -6,7 +6,7 @@ import { imageHostingUrl } from "../utilities";
 
 export function ImageView() {
     const { path } = useParams();
-    const { url, loading } = useImage(
+    const { blobUrl, loading } = useImage(
         `${imageHostingUrl}/images/` + (path ?? "")
     );
 
@@ -16,7 +16,7 @@ export function ImageView() {
             {/* eslint-disable-next-line */}
             <img
                 alt={"Fullscreen image from the blog"}
-                src={url}
+                src={blobUrl}
                 style={{ height: "100vh", margin: "auto", display: "block" }}
             />
         </Box>

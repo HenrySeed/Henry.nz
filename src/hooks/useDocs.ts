@@ -1,6 +1,7 @@
 import { collection, getDocs } from "firebase/firestore/lite";
 import { useState, useEffect, useCallback } from "react";
 import { db } from "../components/firebase";
+import { getErrorMsg } from "../utilities";
 
 /**
  * A generic hook to fetch data from a firestore collection of docs
@@ -33,14 +34,14 @@ export function useDocs(collectionName: string, options?: { skip?: boolean }) {
                         setLoading(false);
                     }
                 } catch (err) {
-                    const message =
-                        err instanceof Error
-                            ? err.message
-                            : JSON.stringify(err);
-                    setError(message);
+                    console.error(`[useDocs] Error: ${getErrorMsg(err)}`, err);
+                    setError(getErrorMsg(err));
                 }
             })
-            .catch((e) => setError(e));
+            .catch((err) => {
+                console.error(`[useDoc] Error: ${getErrorMsg(err)}`, err);
+                setError(err);
+            });
     }, [collectionName, refetchCounter, options]);
 
     const refetch = useCallback(() => {

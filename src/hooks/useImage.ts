@@ -1,29 +1,40 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "./useAuth";
+import { getErrorMsg, getImagePaths } from "../utilities";
 
-export function useImage(url: string) {
-    const [imageUrl, setImageUrl] = useState("");
+export function useImage(url: string, variant?: "thumb" | "large" | "full") {
+    const [blobUrl, setBlobUrl] = useState("");
     const [loading, setLoading] = useState(true);
     const { user } = useAuth();
 
     useEffect(() => {
         if (user) {
+            console.log(`[useImage] Loading image blob for: "${url}"`);
+            const correctUrl = variant ? getImagePaths(url)[variant] : url;
+
             user.getIdToken().then((idToken) => {
-                fetch(url, {
+                fetch(correctUrl, {
                     headers: {
                         Authorization: `Bearer ${idToken}`,
                     },
                 })
                     .then(async (res) => {
                         const blob = await res.blob();
-                        const url = URL.createObjectURL(blob);
-                        setImageUrl(url);
+                        const newBlobUrl = URL.createObjectURL(blob);
+                        setBlobUrl(newBlobUrl);
                         setLoading(false);
+                        console.log(`[useImage] Loaded`);
                     })
-                    .catch(() => setLoading(false));
+                    .catch((err) => {
+                        setLoading(false);
+                        console.error(
+                            `[useImage] Error: ${getErrorMsg(err)}`,
+                            err
+                        );
+                    });
             });
         }
-    }, [user, url]);
+    }, [user, url, variant]);
 
-    return { url: imageUrl, loading };
+    return { blobUrl, loading };
 }

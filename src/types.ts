@@ -4,6 +4,7 @@ export interface TimelineItem {
 }
 
 export interface BlogPost {
+    cover: string;
     type: "Text Post" | "Timeline Post";
     id: string;
     title: string;

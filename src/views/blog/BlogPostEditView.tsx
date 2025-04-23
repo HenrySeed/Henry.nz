@@ -1,4 +1,4 @@
-import { Save, Delete } from "@mui/icons-material";
+import { Save, Delete, Upload, Cancel } from "@mui/icons-material";
 import {
     Stack,
     TextField,
@@ -16,6 +16,9 @@ import { db } from "../../components/firebase";
 import { useAuth } from "../../hooks/useAuth";
 import { BlogPost } from "../../types";
 import { BlogTextfield } from "../../components/BlogTextfield";
+import { DragDropFileUpload } from "../../components/DropZone";
+import { getErrorMsg, imageHostingUrl } from "../../utilities";
+import { BlogCover } from "../../components/BlogCover";
 
 export function BlogPostEditView({
     post,
@@ -31,10 +34,13 @@ export function BlogPostEditView({
     const [type, setType] = useState<"Text Post" | "Timeline Post">(
         "Text Post"
     );
+    const [cover, setCover] = useState("");
+
+    const [coverUploading, setCoverUploading] = useState(false);
     const [saving, setSaving] = useState(false);
     const [deleting, setDeleting] = useState(false);
     const navigate = useNavigate();
-    useAuth();
+    const { user } = useAuth();
 
     useEffect(() => {
         if (post) {
@@ -43,14 +49,15 @@ export function BlogPostEditView({
             setTags(post.tags);
             setType(post.type);
             setID(post.id);
+            setCover(post.cover);
         }
     }, [post]);
 
     useEffect(() => {
-        if (type === "Timeline Post") {
+        if (post === null && type === "Timeline Post") {
             setContent("[]");
         }
-    }, [type]);
+    }, [id, type, post]);
 
     useEffect(() => {
         // if we have no post, update the id with the new title based one
@@ -75,12 +82,16 @@ export function BlogPostEditView({
             created: post?.created.getTime() ?? now,
             updated: now,
             tags: tags,
+            cover,
         };
         console.log("[blog] Saving BlogPost", id, newPost);
 
         setSaving(true);
-        await setDoc(doc(db, "blogPosts", id), newPost).catch((e) =>
-            console.error(e)
+        await setDoc(doc(db, "blogPosts", id), newPost).catch((err) =>
+            console.error(
+                `[BlogPostEditView] handleSave Error: ${getErrorMsg(err)}`,
+                err
+            )
         );
         setSaving(false);
 
@@ -93,7 +104,12 @@ export function BlogPostEditView({
         await setDoc(doc(db, "blogPosts", id), {
             ...post,
             deleted: true,
-        }).catch((e) => console.error(e));
+        }).catch((err) =>
+            console.error(
+                `[BlogPostEditView] handleDelete Error: ${getErrorMsg(err)}`,
+                err
+            )
+        );
         setDeleting(false);
 
         navigate(`/blog/`, { replace: true });
@@ -103,6 +119,73 @@ export function BlogPostEditView({
     return (
         <>
             <Stack spacing={4}>
+                {cover ? (
+                    <Stack spacing={1} alignItems="flex-end">
+                        <BlogCover src={cover} />
+                        <Button
+                            sx={{ width: "fit-content" }}
+                            variant="outlined"
+                            onClick={() => setCover("")}
+                        >
+                            Remove Cover
+                        </Button>
+                    </Stack>
+                ) : (
+                    <DragDropFileUpload
+                        onFileUpload={async (file) => {
+                            console.log("[Blog] Uploading image", file);
+                            setCoverUploading(true);
+                            try {
+                                const form = new FormData();
+                                form.append("image", file);
+
+                                const idToken =
+                                    user && (await user.getIdToken());
+
+                                const res = await fetch(
+                                    `${imageHostingUrl}/upload`,
+                                    {
+                                        method: "POST",
+                                        body: form,
+                                        headers: {
+                                            Authorization: `Bearer ${idToken}`,
+                                        },
+                                    }
+                                );
+                                if (res.status === 200) {
+                                    const { full } = await res.json();
+                                    console.log(`[Blog] Upload complete:`);
+                                    setCover(imageHostingUrl + full);
+                                } else {
+                                    console.error(res.statusText);
+                                }
+                            } catch (err) {
+                                console.error(
+                                    `[BlogPostEditView] onFileUpload Error: ${getErrorMsg(
+                                        err
+                                    )}`,
+                                    err
+                                );
+                            }
+
+                            setCoverUploading(false);
+                        }}
+                    >
+                        <Stack spacing={1} direction="row" alignItems="center">
+                            {coverUploading ? (
+                                <>
+                                    <CircularProgress size={20} />
+                                    <span>Uploading</span>
+                                </>
+                            ) : (
+                                <>
+                                    <Upload />
+                                    <span>Upload Cover Photo</span>
+                                </>
+                            )}
+                        </Stack>
+                    </DragDropFileUpload>
+                )}
                 <TextField
                     autoFocus
                     disabled={saving}
@@ -163,7 +246,7 @@ export function BlogPostEditView({
                                     }}
                                 />
                             ) : (
-                                <Save />
+                                <Delete />
                             )
                         }
                         onClick={async () => handleDelete()}
@@ -193,7 +276,7 @@ export function BlogPostEditView({
                         </Button>
                         <Button
                             disabled={saving}
-                            startIcon={<Delete />}
+                            startIcon={<Cancel />}
                             variant="outlined"
                             onClick={() => {
                                 navigate(`/blog/${id}`, { replace: true });

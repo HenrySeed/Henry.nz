@@ -5,11 +5,11 @@ import {
     signInWithPopup,
 } from "firebase/auth";
 import { useAuth } from "../hooks/useAuth";
-import { Button, CircularProgress } from "@mui/material";
+import { Button, ButtonProps, CircularProgress } from "@mui/material";
 import { VerifiedUser, Logout } from "@mui/icons-material";
 import { useState } from "react";
 
-export function SignInButton() {
+export function SignInButton(props: ButtonProps) {
     const { user } = useAuth();
     const [loading, setLoading] = useState(false);
 
@@ -34,6 +34,7 @@ export function SignInButton() {
                         <Logout />
                     )
                 }
+                {...props}
             >
                 Sign Out
             </Button>
@@ -64,6 +65,7 @@ export function SignInButton() {
 
                     setLoading(false);
                 }}
+                {...props}
             >
                 Sign in
             </Button>

@@ -19,6 +19,8 @@ import { useBlogPost } from "../../hooks/useBlogPost";
 import { BlogPost, TimelineItem } from "../../types";
 import { BlogPostEditView } from "./BlogPostEditView";
 import { BlogTextfield } from "../../components/BlogTextfield";
+import { BlogCover } from "../../components/BlogCover";
+import { getErrorMsg } from "../../utilities";
 
 export function BlogPostView() {
     const { id } = useParams();
@@ -29,7 +31,7 @@ export function BlogPostView() {
 
     if (!editMode) {
         return (
-            <div className="projWrapper">
+            <div className="projWrapper" style={{ overflowX: "visible" }}>
                 <Stack direction="row" justifyContent="space-between">
                     <Button
                         onClick={() => navigate("/blog")}
@@ -52,6 +54,17 @@ export function BlogPostView() {
 
                 {loading && <CenteredProgress />}
 
+                {!loading && blogPost && (
+                    <>
+                        {blogPost.cover && (
+                            <BlogCover
+                                sx={{ marginTop: "20px" }}
+                                src={blogPost.cover}
+                            />
+                        )}
+                    </>
+                )}
+
                 {!loading && blogPost && blogPost.type === "Text Post" && (
                     <TextPostView blogPost={blogPost} />
                 )}
@@ -65,7 +78,7 @@ export function BlogPostView() {
         );
     } else {
         return (
-            <div className="projWrapper">
+            <div className="projWrapper" style={{ overflowX: "visible" }}>
                 <BlogPostEditView
                     post={blogPost}
                     onExitEditing={() => {
@@ -109,8 +122,11 @@ function TimeLinePostView({
         console.log("[blog] Saving Timeline BlogPost", blogPost.id, newPost);
 
         setSaving(true);
-        await setDoc(doc(db, "blogPosts", blogPost.id), newPost).catch((e) =>
-            console.error(e)
+        await setDoc(doc(db, "blogPosts", blogPost.id), newPost).catch((err) =>
+            console.error(
+                `[TimeLinePostView] handleSave Error ${getErrorMsg(err)}`,
+                err
+            )
         );
 
         setNewItem("");
@@ -192,9 +208,8 @@ function TextPostView({ blogPost }: { blogPost: BlogPost }) {
     return (
         <Box sx={{ marginTop: "30px" }}>
             <TimeStamp date={blogPost.updated} />
-            <MarkdownRender>
-                {`# ${blogPost.title}\n` + blogPost.content}
-            </MarkdownRender>
+            <h1>{blogPost.title}</h1>
+            <MarkdownRender>{blogPost.content}</MarkdownRender>
         </Box>
     );
 }

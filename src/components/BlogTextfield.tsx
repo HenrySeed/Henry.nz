@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
-import { imageHostingUrl } from "../utilities";
+import { getErrorMsg, imageHostingUrl } from "../utilities";
 import MarkdownRender from "./MarkdownRender";
 import { useKeyPress } from "../hooks/useKeyPress";
 
@@ -67,7 +67,10 @@ export function BlogTextfield(textFieldProps: TextFieldProps) {
                     console.error(res.statusText);
                 }
             } catch (err) {
-                console.error(e);
+                console.error(
+                    `[BlogTextfield] handleDrop Error: ${getErrorMsg(err)}`,
+                    err
+                );
             }
 
             setUploading(false);

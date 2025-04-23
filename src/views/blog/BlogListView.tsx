@@ -5,6 +5,7 @@ import {
     Button,
     CardActionArea,
     CardContent,
+    CardMedia,
     Grid,
     Stack,
     Typography,
@@ -15,28 +16,17 @@ import { Add } from "@mui/icons-material";
 import { TimeStamp } from "../../components/TimeStamp";
 import { useBlogPosts } from "../../hooks/useBlogPosts";
 import { BlogPost } from "../../types";
+import { useImage } from "../../hooks/useImage";
 
 export function BlogList() {
     const navigate = useNavigate();
-    const { user } = useAuth();
-    const { blogPosts, loading, refetch } = useBlogPosts();
+    const { user, loading: loadingUser } = useAuth();
+    const { blogPosts, loading: loadingPosts, refetch } = useBlogPosts();
 
     useEffect(() => refetch(), [user, refetch]);
 
-    if (!user) {
-        return (
-            <Stack
-                direction="row"
-                justifyContent="center"
-                sx={{ paddingY: "30vh" }}
-            >
-                <SignInButton />
-            </Stack>
-        );
-    }
-
     return (
-        <div className="projWrapper">
+        <div className="projWrapper" style={{ overflowX: "visible" }}>
             <Stack
                 direction="row"
                 justifyContent={"space-between"}
@@ -44,13 +34,26 @@ export function BlogList() {
                 sx={{ marginBottom: "50px" }}
             >
                 <h1>Hank's Blog</h1>
-                <SignInButton />
+                {user && <SignInButton />}
             </Stack>
 
             <Stack spacing={2} justifyContent="center">
-                {loading ? (
-                    <CenteredProgress />
-                ) : (
+                {/* We are loading the user or the data */}
+                {loadingUser || (user && loadingPosts && <CenteredProgress />)}
+
+                {/* We know the user is signed out */}
+                {!loadingUser && !user && (
+                    <Stack
+                        direction="row"
+                        justifyContent="center"
+                        sx={{ paddingY: "30vh" }}
+                    >
+                        <SignInButton size="large" />
+                    </Stack>
+                )}
+
+                {/* We have a user and posts */}
+                {user && !loadingPosts && (
                     <Grid container spacing={4}>
                         <Grid size={{ md: 4, sm: 6, xs: 12 }}>
                             <Button
@@ -79,35 +82,41 @@ export function BlogList() {
 
 function BlogPostCard({ post }: { post: BlogPost }) {
     const navigate = useNavigate();
+    const { blobUrl } = useImage(post.cover, "thumb");
 
     return (
         <CardActionArea
             onClick={() => navigate(`/blog/${post.id}`)}
             sx={{ height: "100%" }}
         >
-            <CardContent
-                sx={{
-                    height: "100%",
-                    top: 0,
-                    position: "relative",
-                }}
-            >
-                <Stack spacing={1}>
-                    <TimeStamp date={new Date(post.updated)} />
-                    <Typography variant="h5">{post.title}</Typography>
+            <Stack sx={{ minHeight: "100%" }}>
+                {blobUrl && (
+                    <CardMedia image={blobUrl} sx={{ height: "170px" }} />
+                )}
+                <CardContent>
+                    <Stack spacing={1}>
+                        <TimeStamp date={new Date(post.updated)} />
+                        <Typography variant="h5">{post.title}</Typography>
 
-                    {post.type === "Text Post" && (
-                        <Typography variant="body2">
-                            {post.content.split("\n")[0]}
-                        </Typography>
-                    )}
-                    {post.type === "Timeline Post" && (
-                        <Typography variant="body2">
-                            {`${JSON.parse(post.content).length} posts`}
-                        </Typography>
-                    )}
-                </Stack>
-            </CardContent>
+                        {!post.cover && (
+                            <>
+                                {post.type === "Text Post" && (
+                                    <Typography variant="body2">
+                                        {post.content.split("\n")[0]}
+                                    </Typography>
+                                )}
+                                {post.type === "Timeline Post" && (
+                                    <Typography variant="body2">
+                                        {`${
+                                            JSON.parse(post.content).length
+                                        } posts`}
+                                    </Typography>
+                                )}
+                            </>
+                        )}
+                    </Stack>
+                </CardContent>
+            </Stack>
         </CardActionArea>
     );
 }

@@ -55,3 +55,7 @@ export function getImagePaths(url: string) {
         full: baseUrl,
     };
 }
+
+export function getErrorMsg(err: any) {
+    return err instanceof Error ? err.message : JSON.stringify(err);
+}
