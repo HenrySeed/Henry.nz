@@ -14,8 +14,8 @@ export function CaptionedImage({
     caption: string;
     style?: React.CSSProperties;
 }) {
-    const isHorizontal = imageRatio !== undefined ? imageRatio < 1 : false;
-    const isVertical = imageRatio !== undefined ? imageRatio > 1 : false;
+    const isHorizontal = imageRatio !== undefined ? imageRatio > 1 : false;
+    const isVertical = imageRatio !== undefined ? imageRatio < 1 : false;
 
     const imageStyle: CSSProperties = {
         ...(isHorizontal && { width: "100vw" }),
@@ -39,7 +39,7 @@ export function CaptionedImage({
             }}
         >
             {blurhash && (
-                <div
+                <span
                     style={{
                         position: "absolute",
                         inset: 0,
@@ -48,7 +48,7 @@ export function CaptionedImage({
                     }}
                 >
                     <Blurhash hash={blurhash} width="100%" height="100%" />
-                </div>
+                </span>
             )}
             {src && (
                 <img

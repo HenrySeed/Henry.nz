@@ -2,6 +2,7 @@ import { collection, getDocs } from "firebase/firestore/lite";
 import { useState, useEffect, useCallback } from "react";
 import { db } from "../components/firebase";
 import { getErrorMsg } from "../utilities";
+import { useAuthContext } from "./AuthContext";
 
 /**
  * A generic hook to fetch data from a firestore collection of docs
@@ -13,15 +14,16 @@ import { getErrorMsg } from "../utilities";
  */
 export function useDocs<T = any>(
     collectionName: string,
-    options?: { skip?: boolean }
+    options?: { skip?: boolean; ignoreUserCheck?: boolean }
 ) {
     const [docs, setDocs] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [refetchCounter, setRefetchCounter] = useState(0);
     const [error, setError] = useState<string | undefined>(undefined);
+    const { user } = useAuthContext();
 
     useEffect(() => {
-        if (options?.skip) {
+        if (options?.skip || (!options?.ignoreUserCheck && !user)) {
             return;
         }
         setLoading(true);
@@ -45,7 +47,7 @@ export function useDocs<T = any>(
                 console.error(`[useDoc] Error: ${getErrorMsg(err)}`, err);
                 setError(err);
             });
-    }, [collectionName, refetchCounter, options?.skip]);
+    }, [collectionName, refetchCounter, options?.skip, user]);
 
     const refetch = useCallback(() => {
         setRefetchCounter((prev) => prev + 1);

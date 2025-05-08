@@ -43,7 +43,7 @@ export function timeAgo(timestamp: number): string {
 }
 
 export function getImagePaths(url: string) {
-    console.log(`[getImagePaths] ${url}`);
+    // console.log(`[getImagePaths] ${url}`);
     const baseUrl = url.replace(
         /(?:-thumb)|(?:-large)(\.[a-zA-Z]{1,5})/g,
         "$1"
@@ -51,18 +51,11 @@ export function getImagePaths(url: string) {
     const noExt = baseUrl.replace(/\.[A-Za-z]{1,5}/g, "");
     const ext = url.match(/\.[A-Za-z]{1,5}$/g)?.[0];
 
-    console.log({
-        thumb: `${noExt}-thumb${ext}`,
-        large: `${noExt}-large${ext}`,
-        full: baseUrl,
-        fileName: noExt,
-    });
-
     return {
         thumb: `${noExt}-thumb${ext}`,
         large: `${noExt}-large${ext}`,
         full: baseUrl,
-        fileName: noExt,
+        fileName: noExt.split("/").slice(-1)[0],
     };
 }
 

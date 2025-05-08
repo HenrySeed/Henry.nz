@@ -186,6 +186,7 @@ function TimeLinePostView({
 
                 {items.map((item, index) => (
                     <TimeLinePost
+                        key={item.createdMs}
                         item={item}
                         isSaving={isSaving}
                         isEditing={editingIndex === index}

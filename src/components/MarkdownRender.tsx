@@ -57,7 +57,7 @@ function CustomImage({ node }: MarkdownImageProps) {
         >
             <CaptionedImage
                 imageRatio={imageRatio}
-                blurhash={blurhash}
+                // blurhash={blurhash}
                 caption={node?.properties.alt as string}
                 src={blobUrl}
             />

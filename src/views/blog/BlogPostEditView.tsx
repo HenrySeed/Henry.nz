@@ -101,8 +101,11 @@ export function BlogPostEditView({
 
     async function handleDelete() {
         setDeleting(true);
+        console.log(post);
         await setDoc(doc(db, "blogPosts", id), {
             ...post,
+            created: post?.created.getTime(),
+            updated: post?.updated.getTime(),
             deleted: true,
         }).catch((err) =>
             console.error(

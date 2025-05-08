@@ -26,8 +26,6 @@ export function BlogList() {
 
     useEffect(() => refetch(), [user, refetch]);
 
-    console.log(`BlogList`, loadingAuth);
-
     return (
         <div className="projWrapper" style={{ overflowX: "visible" }}>
             <Stack

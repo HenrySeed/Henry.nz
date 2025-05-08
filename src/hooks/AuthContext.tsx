@@ -32,6 +32,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const { docs: blogUsers } = useDocs<BlogUser>("users", {
         skip: user === null,
+        ignoreUserCheck: true,
     });
 
     useEffect(() => {
@@ -58,7 +59,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         role,
         loading: loadingUser || loadingRole,
     };
-    console.log(`[AuthContext] `, value);
+    // console.log(`[AuthContext] `, value, { loadingUser, loadingRole });
 
     return (
         <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

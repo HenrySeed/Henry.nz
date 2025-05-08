@@ -11,6 +11,9 @@ export function useImage(path: string, variant?: "thumb" | "large" | "full") {
     const [imageRatio, setImageRatio] = useState(0);
 
     useEffect(() => {
+        if (path === "") {
+            return;
+        }
         if (user) {
             console.log(`[useImage] Loading image blob for: "${path}"`);
             const variants = getImagePaths(path);
@@ -28,7 +31,6 @@ export function useImage(path: string, variant?: "thumb" | "large" | "full") {
                     .then(async (res) => {
                         res.json()
                             .then((val) => {
-                                console.log(`BLURHASH: ${val}`);
                                 const { blurhash, width, height } = val;
                                 setBlurHash(blurhash);
                                 setImageRatio(width / height);
@@ -60,7 +62,6 @@ export function useImage(path: string, variant?: "thumb" | "large" | "full") {
                             const newBlobUrl = URL.createObjectURL(blob);
                             setBlobUrl(newBlobUrl);
                             setLoading(false);
-                            console.log(`[useImage] Loaded`);
                         });
                     })
                     .catch((err) => {
