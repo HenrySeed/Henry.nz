@@ -19,7 +19,7 @@ import { BlogPost } from "../../types";
 import { useImage } from "../../hooks/useImage";
 import { useAuthContext } from "../../hooks/AuthContext";
 
-export function BlogList() {
+export function HomeView() {
     const navigate = useNavigate();
     const { user, loading: loadingAuth, role } = useAuthContext();
     const { blogPosts, loading: loadingPosts, refetch } = useBlogPosts();
@@ -32,11 +32,16 @@ export function BlogList() {
                 direction="row"
                 justifyContent={"space-between"}
                 spacing={2}
+                alignItems="center"
                 sx={{ marginBottom: "50px" }}
             >
                 <h1>Hank's Blog</h1>
                 {user && (
-                    <Stack spacing={1} direction="row" sx={{ height: "35px" }}>
+                    <Stack
+                        spacing={1}
+                        direction="row"
+                        sx={{ height: "36.5px" }}
+                    >
                         <SignInButton size="small" />
                         {role === "admin" && (
                             <Button

@@ -14,12 +14,7 @@ export function CaptionedImage({
     caption: string;
     style?: React.CSSProperties;
 }) {
-    const isHorizontal = imageRatio !== undefined ? imageRatio > 1 : false;
-    const isVertical = imageRatio !== undefined ? imageRatio < 1 : false;
-
     const imageStyle: CSSProperties = {
-        ...(isHorizontal && { width: "100vw" }),
-        ...(isVertical && { height: "100vh" }),
         maxHeight: "100%",
         maxWidth: "100%",
         aspectRatio: imageRatio,

@@ -9,7 +9,7 @@ import { CenteredProgress } from "../../components/Loading";
 import { TimeStamp } from "../../components/TimeStamp";
 import { useBlogPost } from "../../hooks/useBlogPost";
 import { BlogPost, TimelineItem } from "../../types";
-import { BlogPostEditView } from "./BlogPostEditView";
+import { EditPostView } from "./EditPostView";
 import { BlogTextfield } from "../../components/BlogTextfield";
 import { BlogCover } from "../../components/BlogCover";
 import { getErrorMsg } from "../../utilities";
@@ -36,6 +36,7 @@ export function BlogPostView() {
 
                     {!editMode && role === "admin" && (
                         <Button
+                            variant="outlined"
                             startIcon={<Edit />}
                             onClick={() => {
                                 setEditMode(true);
@@ -74,7 +75,7 @@ export function BlogPostView() {
     } else {
         return (
             <div className="projWrapper" style={{ overflowX: "visible" }}>
-                <BlogPostEditView
+                <EditPostView
                     post={blogPost}
                     onExitEditing={() => {
                         setEditMode(false);
@@ -247,7 +248,7 @@ function TimeLinePost({
                 spacing={2}
             >
                 <TimeStamp date={new Date(item.createdMs)} />
-                {role === "admin" && (
+                {role === "admin" && !isEditing && (
                     <Button
                         sx={{
                             opacity: 0,

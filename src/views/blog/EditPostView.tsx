@@ -20,7 +20,7 @@ import { getErrorMsg, imageHostingUrl } from "../../utilities";
 import { BlogCover } from "../../components/BlogCover";
 import { useAuthContext } from "../../hooks/AuthContext";
 
-export function BlogPostEditView({
+export function EditPostView({
     post,
     onExitEditing,
 }: {

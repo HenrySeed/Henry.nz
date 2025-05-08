@@ -1,13 +1,14 @@
-import { Stack, TextField, Typography } from "@mui/material";
+import { Button, Stack, TextField, Typography } from "@mui/material";
 import { CenteredProgress } from "../../components/Loading";
 import { useDocs } from "../../hooks/useDocs";
 import { ProgressButton } from "../../components/ProgressButton";
-import { Delete, Save } from "@mui/icons-material";
+import { ArrowBackIos, Delete, Save } from "@mui/icons-material";
 import { SignInButton } from "../../components/SignInButton";
 import { useState } from "react";
 import { setDoc, doc, deleteDoc } from "firebase/firestore/lite";
 import { db } from "../../components/firebase";
 import { getErrorMsg } from "../../utilities";
+import { useNavigate } from "react-router";
 
 export interface BlogUser {
     email: string;
@@ -16,6 +17,7 @@ export interface BlogUser {
 
 export function SettingsView() {
     const { docs: blogUsers, loading, refetch } = useDocs<BlogUser>("users");
+    const navigate = useNavigate();
 
     const [isSaving, setIsSaving] = useState(false);
     const [isDeletingEmail, setIsDeletingEmail] = useState("");
@@ -54,10 +56,18 @@ export function SettingsView() {
                 direction="row"
                 justifyContent="space-between"
                 alignItems="center"
+                spacing={2}
+                sx={{ marginBottom: "20px" }}
             >
-                <h1>Settings</h1>
-                <SignInButton size="small" sx={{ height: "35px" }} />
+                <Button
+                    onClick={() => navigate("/blog")}
+                    startIcon={<ArrowBackIos />}
+                >
+                    All Posts
+                </Button>
             </Stack>
+
+            <h1>Settings</h1>
 
             {loading ? (
                 <CenteredProgress />

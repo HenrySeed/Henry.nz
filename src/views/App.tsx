@@ -4,8 +4,8 @@ import ProjectView from "./ProjectView";
 import Home from "./Home";
 import { AboutMeView } from "./AboutMeView";
 import { useEffect } from "react";
-import { BlogList } from "./blog/BlogListView";
-import { BlogPostView } from "./blog/BlogPostView";
+import { HomeView } from "./blog/HomeView";
+import { BlogPostView } from "./blog/PostView";
 import { useProjects } from "../hooks/useProjects";
 import { useArticles } from "../hooks/useArticles";
 import { ImageView } from "./ImageView";
@@ -52,7 +52,7 @@ function App() {
                     }
                 />
                 <Route path="/aboutme" element={<AboutMeView />} />
-                <Route path="/blog" element={<BlogList />} />
+                <Route path="/blog" element={<HomeView />} />
                 <Route path="/blog/settings" element={<SettingsView />} />
                 <Route path="/blog/images/:path" element={<ImageView />} />
                 <Route path="/blog/:id" element={<BlogPostView />} />

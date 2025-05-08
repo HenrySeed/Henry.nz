@@ -17,11 +17,11 @@ export function ImageView() {
             {loading && <CenteredProgress />}
             {/* eslint-disable-next-line */}
             <img
-                alt={"Fullscreen image from the blog"}
+                // alt={"Fullscreen image from the blog"}
                 src={blobUrl}
                 style={{
-                    ...(isHorizontal && { width: "100vw" }),
-                    ...(isVertical && { height: "100vh" }),
+                    // ...(isHorizontal && { width: "100vw" }),
+                    // ...(isVertical && { height: "100vh" }),
                     maxHeight: "100vh",
                     maxWidth: "100vw",
                     margin: "auto",
