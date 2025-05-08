@@ -12,6 +12,7 @@
         "firebase": "latest",
         "marked": "latest",
         "react": "18",
+        "react-blurhash": "^0.3.0",
         "react-dom": "18",
         "react-markdown": "latest",
         "react-router": "latest",

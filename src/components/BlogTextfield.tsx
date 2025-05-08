@@ -11,16 +11,16 @@ import {
     useTheme,
 } from "@mui/material";
 import React, { useState } from "react";
-import { useAuth } from "../hooks/useAuth";
 import { getErrorMsg, imageHostingUrl } from "../utilities";
 import MarkdownRender from "./MarkdownRender";
 import { useKeyPress } from "../hooks/useKeyPress";
+import { useAuthContext } from "../hooks/AuthContext";
 
 export function BlogTextfield(textFieldProps: TextFieldProps) {
     const [isDragging, setDragging] = useState(false);
     const [isUploading, setUploading] = useState(false);
     const theme = useTheme();
-    const { user } = useAuth();
+    const { user } = useAuthContext();
     const [preview, setPreview] = useState(false);
 
     useKeyPress((e) => {
@@ -58,7 +58,7 @@ export function BlogTextfield(textFieldProps: TextFieldProps) {
                         target: {
                             value:
                                 textFieldProps.value +
-                                `\n![Image](${imageHostingUrl}${versions.full})`,
+                                `\n![Image](${versions.full})`,
                         },
                     } as React.ChangeEvent<HTMLInputElement>;
                     textFieldProps.onChange &&

@@ -9,6 +9,7 @@ import { BlogPostView } from "./blog/BlogPostView";
 import { useProjects } from "../hooks/useProjects";
 import { useArticles } from "../hooks/useArticles";
 import { ImageView } from "./ImageView";
+import { SettingsView } from "./blog/SettingsView";
 
 function App() {
     const { projects } = useProjects();
@@ -52,6 +53,7 @@ function App() {
                 />
                 <Route path="/aboutme" element={<AboutMeView />} />
                 <Route path="/blog" element={<BlogList />} />
+                <Route path="/blog/settings" element={<SettingsView />} />
                 <Route path="/blog/images/:path" element={<ImageView />} />
                 <Route path="/blog/:id" element={<BlogPostView />} />
 

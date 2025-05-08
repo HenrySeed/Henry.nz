@@ -1,6 +1,5 @@
-import { Box, CircularProgress, Stack, SxProps, useTheme } from "@mui/material";
+import { Box, Stack, SxProps, useTheme } from "@mui/material";
 import { ReactElement, useCallback, useState } from "react";
-import icon from "react-syntax-highlighter/dist/esm/languages/prism/icon";
 
 export function DragDropFileUpload({
     onFileUpload,

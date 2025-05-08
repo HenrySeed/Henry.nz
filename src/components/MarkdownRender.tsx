@@ -38,7 +38,10 @@ type MarkdownImageProps = React.ClassAttributes<HTMLImageElement> &
 function CustomImage({ node }: MarkdownImageProps) {
     const src = node?.properties.src as string;
     const { full } = getImagePaths(src);
-    const { blobUrl } = useImage(src, src.endsWith(".gif") ? "full" : "large");
+    const { blobUrl, imageRatio, blurhash } = useImage(
+        src,
+        src.endsWith(".gif") ? "full" : "large"
+    );
     const imageName = full.split("/").slice(-1);
 
     return (
@@ -53,6 +56,8 @@ function CustomImage({ node }: MarkdownImageProps) {
             style={{ cursor: "pointer" }}
         >
             <CaptionedImage
+                imageRatio={imageRatio}
+                blurhash={blurhash}
                 caption={node?.properties.alt as string}
                 src={blobUrl}
             />

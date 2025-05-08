@@ -7,23 +7,26 @@ import {
     CardContent,
     CardMedia,
     Grid,
+    Skeleton,
     Stack,
     Typography,
 } from "@mui/material";
 import { useNavigate } from "react-router";
-import { useAuth } from "../../hooks/useAuth";
-import { Add } from "@mui/icons-material";
+import { Add, Settings } from "@mui/icons-material";
 import { TimeStamp } from "../../components/TimeStamp";
 import { useBlogPosts } from "../../hooks/useBlogPosts";
 import { BlogPost } from "../../types";
 import { useImage } from "../../hooks/useImage";
+import { useAuthContext } from "../../hooks/AuthContext";
 
 export function BlogList() {
     const navigate = useNavigate();
-    const { user, loading: loadingUser } = useAuth();
+    const { user, loading: loadingAuth, role } = useAuthContext();
     const { blogPosts, loading: loadingPosts, refetch } = useBlogPosts();
 
     useEffect(() => refetch(), [user, refetch]);
+
+    console.log(`BlogList`, loadingAuth);
 
     return (
         <div className="projWrapper" style={{ overflowX: "visible" }}>
@@ -34,15 +37,31 @@ export function BlogList() {
                 sx={{ marginBottom: "50px" }}
             >
                 <h1>Hank's Blog</h1>
-                {user && <SignInButton />}
+                {user && (
+                    <Stack spacing={1} direction="row" sx={{ height: "35px" }}>
+                        <SignInButton size="small" />
+                        {role === "admin" && (
+                            <Button
+                                onClick={() => navigate("settings")}
+                                size="small"
+                                variant="outlined"
+                                startIcon={<Settings />}
+                            >
+                                Settings
+                            </Button>
+                        )}
+                    </Stack>
+                )}
             </Stack>
 
             <Stack spacing={2} justifyContent="center">
                 {/* We are loading the user or the data */}
-                {loadingUser || (user && loadingPosts && <CenteredProgress />)}
+                {(loadingAuth || (user && loadingPosts)) && (
+                    <CenteredProgress />
+                )}
 
                 {/* We know the user is signed out */}
-                {!loadingUser && !user && (
+                {!loadingAuth && !user && (
                     <Stack
                         direction="row"
                         justifyContent="center"
@@ -52,19 +71,33 @@ export function BlogList() {
                     </Stack>
                 )}
 
+                {!loadingAuth && role === null && (
+                    <Typography
+                        sx={{
+                            textAlign: "center",
+                            paddingTop: "20vh",
+                            fontFamily: "monospace",
+                        }}
+                    >
+                        You aren't supposed to be here...
+                    </Typography>
+                )}
+
                 {/* We have a user and posts */}
-                {user && !loadingPosts && (
+                {user && role && !loadingPosts && (
                     <Grid container spacing={4}>
-                        <Grid size={{ md: 4, sm: 6, xs: 12 }}>
-                            <Button
-                                sx={{ height: "100%", width: "100%" }}
-                                variant="outlined"
-                                onClick={() => navigate("/blog/new")}
-                                startIcon={<Add />}
-                            >
-                                New Post
-                            </Button>
-                        </Grid>
+                        {role === "admin" && (
+                            <Grid size={{ md: 4, sm: 6, xs: 12 }}>
+                                <Button
+                                    sx={{ height: "100%", width: "100%" }}
+                                    variant="outlined"
+                                    onClick={() => navigate("/blog/new")}
+                                    startIcon={<Add />}
+                                >
+                                    New Post
+                                </Button>
+                            </Grid>
+                        )}
                         {blogPosts.map((post, i) => (
                             <Grid
                                 size={{ md: 4, sm: 6, xs: 12 }}
@@ -82,7 +115,7 @@ export function BlogList() {
 
 function BlogPostCard({ post }: { post: BlogPost }) {
     const navigate = useNavigate();
-    const { blobUrl } = useImage(post.cover, "thumb");
+    const { blobUrl, loading } = useImage(post.cover, "thumb");
 
     return (
         <CardActionArea
@@ -92,6 +125,11 @@ function BlogPostCard({ post }: { post: BlogPost }) {
             <Stack sx={{ minHeight: "100%" }}>
                 {blobUrl && (
                     <CardMedia image={blobUrl} sx={{ height: "170px" }} />
+                )}
+                {post.cover && loading && (
+                    <CardMedia sx={{ height: "170px" }}>
+                        <Skeleton sx={{ height: "170px", transform: "none" }} />
+                    </CardMedia>
                 )}
                 <CardContent>
                     <Stack spacing={1}>

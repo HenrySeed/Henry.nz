@@ -4,13 +4,13 @@ import {
     GoogleAuthProvider,
     signInWithPopup,
 } from "firebase/auth";
-import { useAuth } from "../hooks/useAuth";
 import { Button, ButtonProps, CircularProgress } from "@mui/material";
 import { VerifiedUser, Logout } from "@mui/icons-material";
 import { useState } from "react";
+import { useAuthContext } from "../hooks/AuthContext";
 
 export function SignInButton(props: ButtonProps) {
-    const { user } = useAuth();
+    const { user } = useAuthContext();
     const [loading, setLoading] = useState(false);
 
     if (user) {

@@ -13,12 +13,12 @@ import { setDoc, doc } from "firebase/firestore/lite";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { db } from "../../components/firebase";
-import { useAuth } from "../../hooks/useAuth";
 import { BlogPost } from "../../types";
 import { BlogTextfield } from "../../components/BlogTextfield";
 import { DragDropFileUpload } from "../../components/DropZone";
 import { getErrorMsg, imageHostingUrl } from "../../utilities";
 import { BlogCover } from "../../components/BlogCover";
+import { useAuthContext } from "../../hooks/AuthContext";
 
 export function BlogPostEditView({
     post,
@@ -40,7 +40,7 @@ export function BlogPostEditView({
     const [saving, setSaving] = useState(false);
     const [deleting, setDeleting] = useState(false);
     const navigate = useNavigate();
-    const { user } = useAuth();
+    const { user } = useAuthContext();
 
     useEffect(() => {
         if (post) {
@@ -154,8 +154,11 @@ export function BlogPostEditView({
                                 );
                                 if (res.status === 200) {
                                     const { full } = await res.json();
-                                    console.log(`[Blog] Upload complete:`);
-                                    setCover(imageHostingUrl + full);
+                                    console.log(
+                                        `[Blog] Upload complete:`,
+                                        full
+                                    );
+                                    setCover(full);
                                 } else {
                                     console.error(res.statusText);
                                 }

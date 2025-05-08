@@ -1,12 +1,30 @@
+import { CSSProperties } from "@mui/material";
+import { Blurhash } from "react-blurhash";
+
 export function CaptionedImage({
     src,
+    imageRatio,
+    blurhash,
     caption,
     style,
 }: {
     src: string;
+    imageRatio?: number;
+    blurhash?: string;
     caption: string;
     style?: React.CSSProperties;
 }) {
+    const isHorizontal = imageRatio !== undefined ? imageRatio < 1 : false;
+    const isVertical = imageRatio !== undefined ? imageRatio > 1 : false;
+
+    const imageStyle: CSSProperties = {
+        ...(isHorizontal && { width: "100vw" }),
+        ...(isVertical && { height: "100vh" }),
+        maxHeight: "100%",
+        maxWidth: "100%",
+        aspectRatio: imageRatio,
+    };
+
     return (
         <span
             style={{
@@ -15,18 +33,32 @@ export function CaptionedImage({
                 width: "fit-content",
                 marginLeft: "auto",
                 marginRight: "auto",
+                background: "#111",
+                ...imageStyle,
                 ...style,
             }}
         >
-            <img
-                src={src}
-                style={{
-                    maxHeight: "600px",
-                    minHeight: "300px",
-                    minWidth: "300px",
-                }}
-                alt={caption}
-            />
+            {blurhash && (
+                <div
+                    style={{
+                        position: "absolute",
+                        inset: 0,
+                        opacity: src === "" ? 1 : 0,
+                        transition: "1s",
+                    }}
+                >
+                    <Blurhash hash={blurhash} width="100%" height="100%" />
+                </div>
+            )}
+            {src && (
+                <img
+                    alt="captioned"
+                    src={src}
+                    style={{
+                        ...imageStyle,
+                    }}
+                />
+            )}
             <span
                 style={{
                     position: "absolute",

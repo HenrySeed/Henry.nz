@@ -2,13 +2,15 @@ import { useParams } from "react-router";
 import { useImage } from "../hooks/useImage";
 import Box from "@mui/material/Box";
 import { CenteredProgress } from "../components/Loading";
-import { imageHostingUrl } from "../utilities";
 
 export function ImageView() {
     const { path } = useParams();
-    const { blobUrl, loading } = useImage(
-        `${imageHostingUrl}/images/` + (path ?? "")
+    const { blobUrl, loading, imageRatio } = useImage(
+        `/images/` + (path ?? "")
     );
+
+    const isHorizontal = imageRatio < 1;
+    const isVertical = imageRatio > 1;
 
     return (
         <Box style={{ height: "100vh", margin: "auto", display: "block" }}>
@@ -17,7 +19,14 @@ export function ImageView() {
             <img
                 alt={"Fullscreen image from the blog"}
                 src={blobUrl}
-                style={{ height: "100vh", margin: "auto", display: "block" }}
+                style={{
+                    ...(isHorizontal && { width: "100vw" }),
+                    ...(isVertical && { height: "100vh" }),
+                    maxHeight: "100vh",
+                    maxWidth: "100vw",
+                    margin: "auto",
+                    display: "block",
+                }}
             />
         </Box>
     );

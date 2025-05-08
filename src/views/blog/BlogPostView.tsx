@@ -1,18 +1,10 @@
 import { setDoc, doc } from "firebase/firestore/lite";
 import { useEffect, useState } from "react";
 import { db } from "../../components/firebase";
-import {
-    Box,
-    Button,
-    CardContent,
-    CircularProgress,
-    Stack,
-    Typography,
-} from "@mui/material";
+import { Box, Button, CardContent, Stack, Typography } from "@mui/material";
 import { useNavigate, useParams } from "react-router";
 import MarkdownRender from "../../components/MarkdownRender";
-import { ArrowBackIos, Edit, PushPin } from "@mui/icons-material";
-import { useAuth } from "../../hooks/useAuth";
+import { ArrowBackIos, Cancel, Edit, PushPin, Save } from "@mui/icons-material";
 import { CenteredProgress } from "../../components/Loading";
 import { TimeStamp } from "../../components/TimeStamp";
 import { useBlogPost } from "../../hooks/useBlogPost";
@@ -21,13 +13,15 @@ import { BlogPostEditView } from "./BlogPostEditView";
 import { BlogTextfield } from "../../components/BlogTextfield";
 import { BlogCover } from "../../components/BlogCover";
 import { getErrorMsg } from "../../utilities";
+import { ProgressButton } from "../../components/ProgressButton";
+import { useAuthContext } from "../../hooks/AuthContext";
 
 export function BlogPostView() {
     const { id } = useParams();
     const [editMode, setEditMode] = useState(id === "new");
     const { blogPost, loading, refetch } = useBlogPost(id);
     const navigate = useNavigate();
-    useAuth();
+    const { role } = useAuthContext();
 
     if (!editMode) {
         return (
@@ -39,7 +33,8 @@ export function BlogPostView() {
                     >
                         All Posts
                     </Button>
-                    {!editMode && (
+
+                    {!editMode && role === "admin" && (
                         <Button
                             startIcon={<Edit />}
                             onClick={() => {
@@ -101,27 +96,25 @@ function TimeLinePostView({
     // we parse the content into a json array of TimelineItem
     const [items, setItems] = useState<TimelineItem[]>([]);
     const [newItem, setNewItem] = useState("");
-    const [saving, setSaving] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
+    const [editingIndex, setEditingIndex] = useState(-1);
+    const { role } = useAuthContext();
 
     useEffect(() => {
         setItems(JSON.parse(blogPost.content));
     }, [blogPost]);
 
-    async function handleSave() {
-        const newContents: TimelineItem[] = [
-            ...items,
-            { createdMs: Date.now(), text: newItem },
-        ];
-        newContents.sort((a, b) => b.createdMs - a.createdMs);
+    async function handleSave(newItems: TimelineItem[]) {
+        newItems.sort((a, b) => b.createdMs - a.createdMs);
         const newPost = {
             ...blogPost,
-            content: JSON.stringify(newContents),
+            content: JSON.stringify(newItems),
             updated: Date.now(),
             created: blogPost.updated.getTime(),
         };
         console.log("[blog] Saving Timeline BlogPost", blogPost.id, newPost);
 
-        setSaving(true);
+        setIsSaving(true);
         await setDoc(doc(db, "blogPosts", blogPost.id), newPost).catch((err) =>
             console.error(
                 `[TimeLinePostView] handleSave Error ${getErrorMsg(err)}`,
@@ -131,63 +124,83 @@ function TimeLinePostView({
 
         setNewItem("");
         onPost();
-        setSaving(false);
+        setIsSaving(false);
     }
 
     return (
         <>
             <h1 style={{ marginBottom: "40px" }}>{blogPost.title}</h1>
             <Stack spacing={3}>
-                <Stack spacing={2}>
-                    <BlogTextfield
-                        disabled={saving}
-                        onChange={(e) => setNewItem(e.target.value)}
-                        onKeyDown={(e) =>
-                            e.key === "Enter" && !e.shiftKey && handleSave()
-                        }
-                        autoFocus
-                        label="New Post"
-                        rows={4}
-                        multiline
-                        value={newItem}
-                    />
+                {role === "admin" && (
+                    <Stack spacing={2}>
+                        <BlogTextfield
+                            disabled={editingIndex >= 0 || isSaving}
+                            onChange={(e) => setNewItem(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter" && !e.shiftKey) {
+                                    handleSave([
+                                        ...items,
+                                        {
+                                            createdMs: Date.now(),
+                                            text: newItem,
+                                        },
+                                    ]);
+                                }
+                            }}
+                            autoFocus
+                            label="New Post"
+                            rows={4}
+                            multiline
+                            value={newItem}
+                        />
 
-                    <Stack
-                        direction="row"
-                        justifyContent={"flex-end"}
-                        spacing={2}
-                    >
-                        <Button
-                            // Disabled when the new item is only whitespace
-                            disabled={
-                                saving ||
-                                newItem.replace(/\s/g, "").length === 0
-                            }
-                            onClick={() => handleSave()}
-                            variant="contained"
-                            startIcon={
-                                saving ? (
-                                    <CircularProgress
-                                        sx={{
-                                            width: "20px !important",
-                                            height: "20px !important",
-                                        }}
-                                    />
-                                ) : (
-                                    <PushPin />
-                                )
-                            }
+                        <Stack
+                            direction="row"
+                            justifyContent={"flex-end"}
+                            spacing={2}
                         >
-                            Post
-                        </Button>
+                            <ProgressButton
+                                // Disabled when the new item is only whitespace
+                                disabled={
+                                    isSaving ||
+                                    newItem.replace(/\s/g, "").length === 0
+                                }
+                                onClick={() =>
+                                    handleSave([
+                                        ...items,
+                                        {
+                                            createdMs: Date.now(),
+                                            text: newItem,
+                                        },
+                                    ])
+                                }
+                                showProgress={editingIndex === -1 && isSaving}
+                                variant="contained"
+                                startIcon={<PushPin />}
+                            >
+                                Post
+                            </ProgressButton>
+                        </Stack>
                     </Stack>
-                </Stack>
+                )}
 
-                {items.map((item) => (
-                    <CardContent key={item.createdMs}>
-                        <TimeStamp date={new Date(item.createdMs)} />
-                        <MarkdownRender>{item.text}</MarkdownRender>
-                    </CardContent>
+                {items.map((item, index) => (
+                    <TimeLinePost
+                        item={item}
+                        isSaving={isSaving}
+                        isEditing={editingIndex === index}
+                        onEdit={() => setEditingIndex(index)}
+                        onCancel={() => setEditingIndex(-1)}
+                        onSave={(newText) => {
+                            handleSave([
+                                ...items.slice(0, index),
+                                { ...item, text: newText },
+                                ...items.slice(index + 1),
+                            ]).then(() => {
+                                setEditingIndex(-1);
+                            });
+                        }}
+                    />
                 ))}
                 {items.length === 0 && (
                     <Typography
@@ -202,6 +215,100 @@ function TimeLinePostView({
                 )}
             </Stack>
         </>
+    );
+}
+function TimeLinePost({
+    item,
+    isSaving,
+    isEditing,
+    onEdit,
+    onSave,
+    onCancel,
+}: {
+    item: TimelineItem;
+    isSaving: boolean;
+    isEditing: boolean;
+    onEdit: () => void;
+    onSave: (newItem: string) => void;
+    onCancel: () => void;
+}) {
+    const [newText, setNewText] = useState(item.text);
+    const { role } = useAuthContext();
+
+    useEffect(() => setNewText(item.text), [item]);
+
+    return (
+        <CardContent key={item.createdMs}>
+            <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+                spacing={2}
+            >
+                <TimeStamp date={new Date(item.createdMs)} />
+                {role === "admin" && (
+                    <Button
+                        sx={{
+                            opacity: 0,
+                            "div:hover > div > &": {
+                                opacity: 1,
+                            },
+                            transition: "0.2s",
+                        }}
+                        onClick={() => onEdit()}
+                        startIcon={<Edit />}
+                        size="small"
+                        variant="outlined"
+                    >
+                        Edit
+                    </Button>
+                )}
+            </Stack>
+            {isEditing ? (
+                <Stack spacing={2}>
+                    <BlogTextfield
+                        disabled={isSaving}
+                        onChange={(e) => setNewText(e.target.value)}
+                        onKeyDown={(e) =>
+                            e.key === "Enter" && !e.shiftKey && onSave(newText)
+                        }
+                        autoFocus
+                        label="Edit Post"
+                        rows={4}
+                        multiline
+                        value={newText}
+                    />
+                    <Stack
+                        direction="row"
+                        spacing={2}
+                        justifyContent={"flex-end"}
+                    >
+                        <Button
+                            disabled={isSaving}
+                            onClick={() => {
+                                setNewText(item.text);
+                                onCancel();
+                            }}
+                            startIcon={<Cancel />}
+                            variant="outlined"
+                        >
+                            Cancel
+                        </Button>
+                        <ProgressButton
+                            disabled={isSaving}
+                            onClick={() => onSave(newText)}
+                            startIcon={<Save />}
+                            showProgress={isSaving}
+                            variant="contained"
+                        >
+                            Save
+                        </ProgressButton>
+                    </Stack>
+                </Stack>
+            ) : (
+                <MarkdownRender>{item.text}</MarkdownRender>
+            )}
+        </CardContent>
     );
 }
 function TextPostView({ blogPost }: { blogPost: BlogPost }) {

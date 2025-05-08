@@ -11,7 +11,10 @@ import { getErrorMsg } from "../utilities";
  * @param {{ skip?: boolean }} [options]
  * @return {*}
  */
-export function useDocs(collectionName: string, options?: { skip?: boolean }) {
+export function useDocs<T = any>(
+    collectionName: string,
+    options?: { skip?: boolean }
+) {
     const [docs, setDocs] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [refetchCounter, setRefetchCounter] = useState(0);
@@ -42,11 +45,11 @@ export function useDocs(collectionName: string, options?: { skip?: boolean }) {
                 console.error(`[useDoc] Error: ${getErrorMsg(err)}`, err);
                 setError(err);
             });
-    }, [collectionName, refetchCounter, options]);
+    }, [collectionName, refetchCounter, options?.skip]);
 
     const refetch = useCallback(() => {
         setRefetchCounter((prev) => prev + 1);
     }, []);
 
-    return { docs, loading, refetch, error };
+    return { docs: docs as T[], loading, refetch, error };
 }
