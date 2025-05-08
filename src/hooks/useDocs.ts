@@ -47,7 +47,13 @@ export function useDocs<T = any>(
                 console.error(`[useDoc] Error: ${getErrorMsg(err)}`, err);
                 setError(err);
             });
-    }, [collectionName, refetchCounter, options?.skip, user]);
+    }, [
+        user,
+        collectionName,
+        refetchCounter,
+        options?.skip,
+        options?.ignoreUserCheck,
+    ]);
 
     const refetch = useCallback(() => {
         setRefetchCounter((prev) => prev + 1);

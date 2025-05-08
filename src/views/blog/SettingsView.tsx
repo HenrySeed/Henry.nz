@@ -3,7 +3,6 @@ import { CenteredProgress } from "../../components/Loading";
 import { useDocs } from "../../hooks/useDocs";
 import { ProgressButton } from "../../components/ProgressButton";
 import { ArrowBackIos, Delete, Save } from "@mui/icons-material";
-import { SignInButton } from "../../components/SignInButton";
 import { useState } from "react";
 import { setDoc, doc, deleteDoc } from "firebase/firestore/lite";
 import { db } from "../../components/firebase";

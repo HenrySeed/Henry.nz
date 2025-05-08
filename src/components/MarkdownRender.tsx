@@ -38,7 +38,7 @@ type MarkdownImageProps = React.ClassAttributes<HTMLImageElement> &
 function CustomImage({ node }: MarkdownImageProps) {
     const src = node?.properties.src as string;
     const { full } = getImagePaths(src);
-    const { blobUrl, imageRatio, blurhash } = useImage(
+    const { blobUrl, imageRatio } = useImage(
         src,
         src.endsWith(".gif") ? "full" : "large"
     );
